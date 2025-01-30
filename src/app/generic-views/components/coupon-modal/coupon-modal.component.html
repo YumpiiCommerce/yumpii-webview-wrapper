@@ -1,0 +1,27 @@
+<div class="coupons-container">
+  <div class="coupon-form">
+    <input class="coupon-input"
+      (keypress)="this.errorText = ''"
+      [placeholder]="this.languageTexts.applyCoupon"
+      [(ngModel)]="this.currentCoupon" />
+    <button class="validate-button" type="button" [ngStyle]="{ 'background-color': this.buttonColor }" (click)="validateCoupon()">
+      <i class="ph-tag"></i>
+    </button>
+  </div>
+  <div class="validation-result">
+    <span *ngIf="this.errorText">{{this.errorText}}</span>
+  </div>
+  <div class="coupons-list">
+    <div *ngFor="let coupon of this.couponsList" class="coupon-detail">
+      <div class="coupon-info">
+        <span class="coupon-code">{{coupon.code}}</span>
+        <span class="coupon-description">{{coupon.description}}</span>
+      </div>
+      <div class="coupon-actions">
+        <button type="remove" (click)="removeCoupon(coupon)">
+          <i class="ph-x"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,84 @@
+<div class="combo-container" *ngIf="combo" [ngStyle]="this.customStyle.getCustomStyle({type: 'general', attributes: ['backgroundColor']})">
+  <div class="combo-info" [ngStyle]="this.customStyle.getCustomStyle({type: 'combo', attributes: ['backgroundColor'], item: combo})">
+    <img class="combo-image" src="{{combo.imageURL}}">
+    <div class="combo-content">
+      <div class="combo-name-container">
+        <p class="combo-id" *ngIf="webviewSettings.displayId || webviewSettings.customAttribute">{{webviewSettings.idPrefix}}{{webviewSettings.displayId ? combo.id : combo[webviewSettings.customAttribute]}}</p>
+        <p class="combo-name" [ngStyle]="this.customStyle.getCustomStyle({type: 'combo', attributes: ['fontColor'], item: combo})"> {{combo.name}} </p>
+        <div *ngIf="this.comboCategory" class="combo-category" [ngStyle]="this.customStyle.getCustomStyle({type: 'combo', attributes: ['backgroundColorComplementary'], item: combo})">
+          <span [ngStyle]="this.customStyle.getCustomStyle({type: 'combo', attributes: ['fontColor'], item: combo})"> {{this.comboCategory.name}} </span>
+        </div>
+      </div>
+      <div class="description-container">
+        <p class="combo-description" [ngStyle]="this.customStyle.getCustomStyle({type: 'combo', attributes: ['fontColor'], item: combo})"> {{combo.description}} </p>
+      </div>
+    </div>
+  </div>
+  <div class="combo-products-container">
+    <div class="product-customization" [ngStyle]="this.customStyle.getCustomStyle({type: 'combo', attributes: ['backgroundColor'], item: combo})">
+      <div class="customization-title" [ngStyle]="this.customStyle.getCustomStyle({type: 'combo', attributes: ['backgroundColorComplementary'], item: combo})">
+        <div class="customization-title-main">
+          <span [ngStyle]="this.customStyle.getCustomStyle({type: 'combo', attributes: ['fontColor'], item: combo})">
+            Productos que aplican
+          </span>
+        </div>
+        <button *ngIf="!this.productsExpanded" class="collapse-button" (click)="this.productsExpanded = !this.productsExpanded">
+          <i class="fas fa-chevron-up"></i>
+        </button>
+        <button *ngIf="this.productsExpanded" class="collapse-button" (click)="this.productsExpanded = !this.productsExpanded">
+          <i class="fas fa-chevron-down"></i>
+        </button>
+      </div>
+      <div class="customization-options-container"
+          [ngStyle]="{ 'max-height': this.productsExpanded ? (42 * this.products.length) + 'px' : '0' }">
+        <div *ngFor="let product of products" class="customization-wrapper" [ngStyle]="this.customStyle.getCustomStyle({type: 'combo', attributes: ['backgroundColor'], item: combo})">
+          <span class="customization-name" [ngStyle]="this.customStyle.getCustomStyle({type: 'combo', attributes: ['fontColor'], item: combo})">
+            {{product.product.title}}
+            <i
+              *ngIf="product.product.getActualPrice(product.quantity) > 0"
+              class="customization-price"
+              [ngStyle]="this.customStyle.getCustomStyle({type: 'combo', attributes: ['fontColor'], item: combo})"
+            >
+              ({{
+                usageMode === 'rewards'
+                ? getActualRewardsPrice(product) + (rewardsInfo.symbol)
+                : product.product.getActualPrice(product.quantity) | currency: webviewSettings.currency : 'symbol-narrow' : webviewSettings.currencyFormat
+              }})
+            </i>
+          </span>
+          <div class="customization-actions">
+            <button type="button" class="minus-button" (click)="addProduct(product.product.id, -1)" [disabled]="product.quantity === 0"><i class="fas fa-minus"></i></button>
+            <input step="1" class="current-count" (change)="addProductByVal(product.product.id, $event)" (keypress)="validateNumbers($event)" [value]="product.quantity">
+            <button type="button" class="plus-button" (click)="addProduct(product.product.id, 1)" [disabled]="product.product.max > 0 && product.quantity >= product.product.max"><i class="fas fa-plus"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="bonuses.length > 0" class="product-customization" [ngStyle]="this.customStyle.getCustomStyle({type: 'combo', attributes: ['backgroundColor'], item: combo})">
+      <div class="customization-title" [ngStyle]="this.customStyle.getCustomStyle({type: 'combo', attributes: ['backgroundColorComplementary'], item: combo})">
+        <div class="customization-title-main">
+          <span [ngStyle]="this.customStyle.getCustomStyle({type: 'combo', attributes: ['fontColor'], item: combo})">
+            Gana por tu compra
+          </span>
+        </div>
+        <button *ngIf="!this.bonusExpanded" class="collapse-button" (click)="this.bonusExpanded = !this.bonusExpanded">
+          <i class="fas fa-chevron-up"></i>
+        </button>
+        <button *ngIf="this.bonusExpanded" class="collapse-button" (click)="this.bonusExpanded = !this.bonusExpanded">
+          <i class="fas fa-chevron-down"></i>
+        </button>
+      </div>
+      <div class="customization-options-container"
+          [ngStyle]="{ 'max-height': this.bonusExpanded ? (32 * this.products.length) + 'px' : '0' }">
+        <div *ngFor="let bonus of bonuses" class="customization-wrapper" [ngStyle]="this.customStyle.getCustomStyle({type: 'combo', attributes: ['backgroundColor'], item: combo})">
+          <span class="customization-name" [ngStyle]="this.customStyle.getCustomStyle({type: 'combo', attributes: ['fontColor'], item: combo})">
+            {{bonus.product.title}}
+          </span>
+          <div class="bonus-quantity" [ngStyle]="this.customStyle.getCustomStyle({type: 'combo', attributes: ['fontColor'], item: combo})">
+            {{bonus.quantity | number : '1.0-2'}} {{bonus.unitsOverride}}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,101 @@
+<div *ngIf="mustDisplay()" class="product-customization" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['backgroundColor'], item: this.cartProduct.product})">
+  <div class="customization-title" (click)="this.cartProduct.setCustomizationCursor(customization._id)" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['backgroundColorComplementary'], item: this.cartProduct.product})">
+    <div class="customization-title-main">
+      <i *ngIf="this.cartProduct.getCustomizationQuantity(customization._id) > 0 && this.cartProduct.isCustomizationMinimumFullfilled(this.customization._id)" class="customization-fullfilled fas fa-check-circle"></i>
+      <span [ngClass]="{ 'customization-title-filled': (this.cartProduct.getCustomizationQuantity(customization._id) > 0) }" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: this.cartProduct.product})">
+        {{this.cartProduct.getCustomizationString(customization._id)}}
+      </span>
+    </div>
+    @if (!customization.legend && customization.size) {
+      <span class="customization-limit-info" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: this.cartProduct.product})">
+        Elige
+        {{!customization.required && customization.size > 1 && customization.size > customization.required ? this.languageTexts.genericThrough + ' ' : ''}}
+        {{customization.required && customization.required !== true && customization.size > customization.required ? this.languageTexts.genericBetween + ' ' + customization.required + ' ' + this.languageTexts.genericAnd + ' ': ''}}
+        {{customization.size}}
+      </span>
+    } @else {
+      <span class="customization-limit-info" *ngIf="customization.legend" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: this.cartProduct.product})">
+        {{customization.legend}}
+      </span>
+    }
+  </div>
+  <div *ngIf="customization.type === 'date'" class="calendar-wrapper"
+        [ngStyle]="{ 'max-height': (this.cartProduct.currentCustomizationIndex === this.cartProduct.getCustomizationIndex(customization._id)) ? '' : '0' }">
+    <mat-calendar [minDate]="minDate" [maxDate]="maxDate" [dateFilter]="filterDates" [(selected)]="this.selectedDate" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: this.cartProduct.product})">
+    </mat-calendar>
+  </div>
+  <div *ngIf="customization.type === 'multi_toggle'" class="toggles-wrapper"
+        [ngStyle]="{ 'max-height': (this.cartProduct.currentCustomizationIndex === this.cartProduct.getCustomizationIndex(customization._id)) ? '' : '0' }">
+    <div class="nav-button">
+      <button (click)="optionsCarousel.prev()"><i class="ph-caret-left"></i></button>
+    </div>
+    <div class="carousel-container">
+      <owl-carousel-o [options]="carouselOptions" #optionsCarousel>
+        <ng-container *ngFor="let optionGroup of this.optionGroups; index as index">
+          <ng-template carouselSlide [id]="'slide' + index">
+            <div class="toggle-option-group" [ngStyle]="{ 'max-height': ((customization.rows || 2) * 50) + 'px' }">
+              <div *ngFor="let option of optionGroup">
+                <button (click)="toggleOption(option)" [ngClass]="{ 'selected': option.quantity > 0 }">{{option.title}}</button>
+              </div>
+            </div>
+          </ng-template>
+        </ng-container>
+      </owl-carousel-o>
+    </div>
+    <div class="nav-button">
+      <button class="right" (click)="optionsCarousel.next()"><i class="ph-caret-right"></i></button>
+    </div>
+  </div>
+  <div *ngIf="['checkbox', 'radio', 'counter'].indexOf(customization.type) >= 0" class="customization-options-container"
+      [ngStyle]="{ 'max-height': (this.cartProduct.currentCustomizationIndex === this.cartProduct.getCustomizationIndex(customization._id)) ? (65 * customization.options.length) + 'px' : '0' }">
+    <div class="customization-wrapper"
+        *ngFor="let option of customization.options" id="{{ 'option_' + option._id }}"
+        [ngClass]="{ 'selected': this.selectedOptionId && option._id === this.selectedOptionId }"
+        [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['backgroundColor'], item: this.cartProduct.product})"
+        (click)="onOptionSelected(option._id)"
+        >
+      <div class="customization-name">
+        <div *ngIf="option.bulletImageURL || option.bulletColor" class="option-button-wrapper">
+          <div class="option-button" [ngStyle]="{ 'background-color': option.bulletColor || '#FFFFFF' }">
+            <img *ngIf="option.bulletImageURL" [src]="option.bulletImageURL">
+          </div>
+        </div>
+        <span [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: this.cartProduct.product})">
+          {{option.title}}
+        </span>
+        <i
+          *ngIf="(this.webviewSettings.displayOptionPrice === 2 && this.getOptionDisplayPrice(customization._id, option) > 0)
+            || (this.webviewSettings.displayOptionPrice
+            && this.webviewSettings.displayOptionPrice !== 2
+            && this.getOptionDisplayPrice(customization._id, option) !== 0)
+          "
+          class="customization-price"
+          [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: this.cartProduct.product})"
+        >
+          ({{
+            this.usageMode === 'rewards'
+              ? this.getOptionDisplayPrice(customization._id, option) > 0
+                ? '+ ' + (this.getOptionDisplayPrice(customization._id, option)) + (rewardsInfo.symbol)
+                : '- ' + ((this.getOptionDisplayPrice(customization._id, option) *-1)) + (rewardsInfo.symbol)
+              : this.getOptionDisplayPrice(customization._id, option) > 0
+                ? '+ ' + (this.getOptionDisplayPrice(customization._id, option) | currency: webviewSettings.currency : 'symbol-narrow' : webviewSettings.currencyFormat)
+                : '- ' + ((this.getOptionDisplayPrice(customization._id, option) *-1) | currency: webviewSettings.currency : 'symbol-narrow' : webviewSettings.currencyFormat)
+          }})
+        </i>
+      </div>
+      <label class="option-container" *ngIf="customization.type === 'checkbox'">
+        <input type="checkbox" value="{{option._id}}" [checked]="option.quantity > 0" (change)="optionChecked(option, $event.target)">
+        <span class="checkmark checkmark-checkbox"></span>
+      </label>
+      <label class="option-container" *ngIf="customization.type === 'radio'">
+        <input type="radio" name="{{ customization._id }}" [checked]="option.quantity > 0" value="{{option._id}}" (change)="optionChecked(option, $event.target)">
+        <span class="checkmark checkmark-radio"></span>
+      </label>
+      <div class="customization-actions" *ngIf="customization.type === 'counter'">
+        <button type="button" class="minus-button" (click)="addCustomization(option, -1)" [disabled]="option.quantity === 0"><i class="fas fa-minus"></i></button>
+        <input type="number" class="current-count" (change)="addCustomizationByVal(option, $event)" (keypress)="validateNumbers($event)" [value]="option.quantity" />
+        <button type="button" class="plus-button" (click)="addCustomization(option, 1)" [disabled]="customization.size > 0 && this.cartProduct.getCustomizationQuantity(customization._id) >= customization.size"><i class="fas fa-plus"></i></button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,73 @@
+<div class="main-header" [ngStyle]="this.getBodyBackgroundColor()">
+  <generic-views-header [showCartButton]="!this.singleProductMode" [showSearchBox]="false" [showHumanButton]="this.loadedConfig.webview.showHumanHelp" [showBackButton]="false"></generic-views-header>
+  <div class="search-box-container">
+    <generic-views-search-box [alwaysExpanded]="true"></generic-views-search-box>
+  </div>
+</div>
+<div class="nav-container" [ngStyle]="this.getBodyBackgroundColor()">
+  <ng-container *ngIf="this.searchTerm.length === 0">
+    <mat-tab-group *ngIf="((this.loadedConfig.webview.displaySuggestedOrder && this.suggestion.products.length > 0) || this.loadedConfig.webview.showFavorites); else singleTab" mat-stretch-tabs class="home-tabs" (selectedTabChange)="onTabChanged($event)">
+      <mat-tab label="Menú">
+        <ng-template mat-tab-label>
+          <i class="fas fa-bars"></i>&nbsp;&nbsp;Menú
+        </ng-template>
+        <ng-template matTabContent>
+          <div class="body-component" [ngClass]="{'featured-carousel-bottom': showCarousel && positionCarousel === 'bottom'}">
+            <ng-container *ngIf="showCarousel && !!positionCarousel">
+              <div #featuredCarousel class="featured-carousel-wrapper">
+                <yumpii-featured-carousel *ngIf="this.loadedConfig.webview.displayCarousel === true && featuredItems.length > 0"></yumpii-featured-carousel>
+              </div>
+            </ng-container>
+            <div class="banners-list-container" [ngClass]="{ 'combos-displayed': this.loadedConfig.webview.displayCarousel === true && featuredItems.length > 0}">
+              <yumpii-banners-list *ngIf="this.loadedConfig.webview.viewMode === 'categorized'"></yumpii-banners-list>
+              <subcategories-list [rootCategories]="true" [topOffset]="this.loadedConfig.webview.language.categoriesTitleText ? '60px' : '15px'" *ngIf="this.loadedConfig.webview.viewMode === 'split'"></subcategories-list>
+            </div>
+          </div>
+        </ng-template>
+      </mat-tab>
+      <mat-tab *ngIf="this.loadedConfig.webview.displaySuggestedOrder && this.suggestion.products.length > 0" label="Sugerido">
+      <!--mat-tab label="Sugerido" -->
+        <ng-template mat-tab-label>
+          <i class="fas fa-shopping-bag"></i>&nbsp;&nbsp;Pedido Sugerido
+        </ng-template>
+        <ng-template matTabContent>
+          <div class="main-container">
+            <generic-views-suggestion></generic-views-suggestion>
+          </div>
+        </ng-template>
+      </mat-tab>
+      <mat-tab *ngIf="this.loadedConfig.webview.showFavorites" label="Favoritos">
+      <!--mat-tab label="Sugerido" -->
+        <ng-template mat-tab-label>
+          <i class="fas fa-heart"></i>&nbsp;&nbsp;Favoritos
+        </ng-template>
+        <ng-template matTabContent>
+          <div class="main-container">
+            <generic-views-favorites></generic-views-favorites>
+          </div>
+        </ng-template>
+      </mat-tab>
+    </mat-tab-group>
+    <ng-template #singleTab>
+      <hr class="separator" [ngStyle]="this.getBodyBackgroundColor()">
+      <div class="body-component" [ngClass]="{'featured-carousel-bottom': showCarousel && positionCarousel === 'bottom'}">
+        <ng-container *ngIf="showCarousel && !!positionCarousel">
+          <div #featuredCarousel class="featured-carousel-wrapper">
+            <yumpii-featured-carousel *ngIf="this.loadedConfig.webview.displayCarousel === true && featuredItems.length > 0"></yumpii-featured-carousel>
+          </div>
+        </ng-container>
+        <div class="banners-list-container" [ngClass]="{ 'combos-displayed': this.loadedConfig.webview.displayCarousel === true && featuredItems.length > 0}">
+          <div *ngIf="this.loadedConfig.webview.language?.categoriesTitleText" class="categories-header">
+            <span class="title">{{this.loadedConfig.webview.language.categoriesTitleText}}</span>
+            <span class="subtitle">{{this.loadedConfig.webview.language.categoriesSubtitleText}}</span>
+          </div>
+          <yumpii-banners-list *ngIf="this.loadedConfig.webview.viewMode === 'categorized'"></yumpii-banners-list>
+          <subcategories-list [rootCategories]="true" [topOffset]="this.loadedConfig.webview.language.categoriesTitleText ? '60px' : '15px'" *ngIf="this.loadedConfig.webview.viewMode === 'split'"></subcategories-list>
+        </div>
+      </div>
+    </ng-template>
+  </ng-container>
+  <div class="search-container" *ngIf="this.searchTerm.length > 0">
+    <generic-views-search-results></generic-views-search-results>
+  </div>
+</div>

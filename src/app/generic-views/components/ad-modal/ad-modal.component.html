@@ -1,0 +1,17 @@
+<div *ngIf="this.displayed" class="modal-wrapper">
+  <div class="modal-box" (click)="adsCarousel.stopAutoplay(); this.autohide = false;">
+    <div class="modal-body">
+      <div class="close-ad-button" (click)="hideModal()"><i class="fas fa-times"></i></div>
+      <owl-carousel-o [options]="carouselOptions" #adsCarousel>
+        <ng-container *ngFor="let imageURL of adModalInfo.imageURLs; index as index">
+          <ng-template carouselSlide [id]="'slide' + index">
+            <div>
+              <img class="ad-image" [src]="imageURL">
+            </div>
+          </ng-template>
+        </ng-container>
+      </owl-carousel-o>
+    </div>
+  </div>
+  <div class="modal-background" (click)="hideModal()"></div>
+</div>

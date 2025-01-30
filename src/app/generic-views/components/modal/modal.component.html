@@ -1,0 +1,14 @@
+<div class="modal-wrapper">
+  <div class="modal-box">
+    <div class="modal-header">
+      <p class="modal-message" [innerHTML]="message | safe:'html'"></p>
+    </div>
+    <div class="modal-body">
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="alert" (click)="performAction()" >{{actionText}}</button>
+      <button type="button" (click)="cancel()" >{{cancelText}}</button>
+    </div>
+  </div>
+  <div class="modal-background"></div>
+</div>

@@ -1,0 +1,85 @@
+<div #paymentFormWrapper class="payment-wrapper">
+  <div class="payment-content">
+    <div class="payment-title">
+        <p>Detalle a pagar</p>
+    </div>
+      <div class="cart-products-content" *ngFor="let cartProduct of cart.products">
+          <div class="cart-product-detail">
+              <p class="name">{{ cartProduct.product.name }}</p>
+              <p class="quantity">{{ cartProduct.quantity }}</p>
+              <p class="price">{{(cartProduct.subtotal / cartProduct.quantity) | currency: webviewSettings.currency : 'symbol-narrow' : webviewSettings.currencyFormat}}</p>
+              <p class="total">{{cartProduct.subtotal | currency: webviewSettings.currency : 'symbol-narrow' : webviewSettings.currencyFormat}}</p>
+          </div>
+      </div>
+      <div class="payment-details">
+          <div class="payment-details-titles">
+              <p>Sub total</p>
+              <p>Descuento</p>
+              <p>Envío</p>
+              <p class="payment-total">Total</p>
+          </div>
+          <div class="payment-details-amount">
+              <p>{{ cart.total | currency : webviewSettings.currency : 'symbol-narrow' : webviewSettings.currencyFormat}}</p>
+              <p>{{ cart.discount | currency : webviewSettings.currency : 'symbol-narrow' : webviewSettings.currencyFormat}}</p>
+              <p>{{ cart.deliveryCost | currency : webviewSettings.currency : 'symbol-narrow' : webviewSettings.currencyFormat}}</p>
+              <p class="payment-total-amount">{{ getTotal() | currency : webviewSettings.currency : 'symbol-narrow' : webviewSettings.currencyFormat}}</p>
+          </div>
+      </div>
+  </div>
+  <div class="card">
+      <div class="card-logos">
+          <mat-icon [svgIcon]="cardType === 'AMEX'
+                              ? 'amex' : cardType === 'VISA'
+                                          ? 'visa' : cardType === 'MASTERCARD'
+                                                      ? 'mastercard' : '' "></mat-icon>
+      </div>
+      <div class="card-labels">
+          <p class="card-number">{{cardNumber.value ? cardNumber.value : '0000 0000 0000 0000'}}</p>
+          <p>{{cardName.value ? cardName.value.toUpperCase() : 'NOMBRE APELLIDO'}}</p>
+          <div class="date-cvv-labels">
+              <p>{{cardDate.value ? cardDate.value : 'MM/AA'}}</p>
+              <p>{{cardCvv.value ? cardCvv.value : 'CVV'}}</p>
+          </div>
+      </div>
+  </div>
+  <form [formGroup]="formCardInfo">
+      <div class="card-content">
+          <div class="card-input-container">
+              <label for="card-number" class="card-input-label">Número de tarjeta</label>
+              <input type="tel" formControlName="cardNumber" id="card-number" class="card-input" (focusout)="cvvTrim()" (input)="creditCardNumberSpacing()" placeholder="0000 0000 0000 0000"/>
+          </div>
+          <div class="card-input-container">
+              <label for="card-name" class="card-input-label">Nombre en la tarjeta</label>
+              <input type="text" formControlName="cardName" id="card-name" class="card-input" (focusout)="trimName()" (input)="nameReplace()" placeholder="Nombre Apellido"/>
+          </div>
+          <div class="date-cvv-container">
+              <div class="card-input-container date-container">
+                  <label for="card-date" class="card-input-label">Fecha</label>
+                  <input type="tel" formControlName="cardDate" id="card-date" class="card-input" (input)="dateSeparator()" placeholder="mm/aa"/>
+              </div>
+              <div class="card-input-container cvv-container">
+                  <label for="card-cvv" class="card-input-label">CVV</label>
+                  <input type="tel" formControlName="cardCvv" id="card-cvv" class="card-input" (input)="cvvTrim()" [placeholder]="cardType==='AMEX' ? '0000' : '000'"/>
+              </div>
+          </div>
+
+          <div *ngIf="installments.length > 1" class="installments-container">
+              <p>Cuotas</p>
+              <div class="custom-select-container" [class.hide]="!isChecked">
+                  <div class="custom-select" (clickOutside)="showDropdown = false" [class.hide]="!isChecked">
+                      <input readonly formControlName = "cardInstallment" class="selected-installment" (click)="showDropdown = !showDropdown"/>
+                      <ul class="dropdown" [hidden]="!showDropdown">
+                          <li *ngFor="let installment of installments" [ngClass]="{'selected': installment === cardInstallment.value}" (click)="selectInstallment(installment)">
+                              {{ installment }}
+                          </li>
+                      </ul>
+                  </div>
+              </div>
+              <div class="toggle-switch" [class.checked]="isChecked" (click)="installmentToggle()">
+                  <div class="toggle-slider"></div>
+              </div>
+          </div>
+
+      </div>
+  </form>
+</div>

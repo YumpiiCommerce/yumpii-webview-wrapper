@@ -1,0 +1,51 @@
+<div class="cart-wrapper">
+  <div class="cart-title">
+    <p>Pedido Sugerido</p>
+  </div>
+  <div class="products-list-container">
+    <ng-container *ngFor="let cartProduct of this.suggestion.products; index as index">
+      <div *ngIf="cartProduct.quantity > 0" class="product-container">
+        <div class="product-card">
+          <div class="product-image" [routerLink]="['/' + currentSlug + '/product/' + cartProduct.product.id]" [queryParams]="{ edit: index }">
+            <img [src]="cartProduct.product.imageURL">
+          </div>
+          <div class="product-content">
+            <div class="product-name" [routerLink]="['/' + currentSlug + '/product/' + cartProduct.product.id]" [queryParams]="{ edit: index }"><p>{{cartProduct.product.title}}</p></div>
+            <div>
+              <div class="product-description-wrapper">
+                <div class="product-description">{{cartProduct.product.shortDescription || cartProduct.product.description}}</div>
+              </div>
+              <ng-container *ngFor="let customization of cartProduct.product.customizations">
+                <ul class="product-customizations-container" *ngIf="cartProduct.getCustomizationQuantity(customization._id) > 0">
+                  <ng-container *ngFor="let option of customization.options">
+                    <li *ngIf="option.quantity > 0">
+                      {{option.quantity > 1 ? option.quantity : ''}} - {{customization.title}}: {{option.title}}
+                    </li>
+                  </ng-container>
+                </ul>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+        <div class="product-actions-wrapper">
+          <span class="product-price">{{cartProduct.subtotal | currency: webviewSettings.currency : 'symbol-narrow' : webviewSettings.currencyFormat}}</span>
+          <div class="product-counter" *ngIf="cartProduct.product.max !== 1">
+            <button type="button" class="minus-button" (click)="cartProduct.decreaseQuantity(1)"><i class="fas fa-minus"></i></button>
+            <input type="number" step="1" class="current-count" (change)="this.setQuantity(cartProduct, $event.target)" (keypress)="validateNumbers($event)" [value]="cartProduct.quantity" />
+            <button type="button" class="plus-button" (click)="cartProduct.increaseQuantity(1)" [disabled]="cartProduct.product.max > 0 && cartProduct.product.max <= cartProduct.quantity"><i class="fas fa-plus"></i></button>
+          </div>
+          <div class="product-counter" *ngIf="cartProduct.product.max === 1">
+            <button type="button" class="minus-button" (click)="cartProduct.decreaseQuantity(1)"><i class="fas fa-trash-alt"></i></button>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+  <generic-views-footer class="footer-component"
+  [buttonText]="this.languageTexts.addToCartButtonText"
+    smallText="{{this.suggestion.productsCount}} {{ this.suggestion.productsCount === 1 ? this.languageTexts.counterLabelSingle : this.languageTexts.counterLabelPlural }}"
+    bigText="{{this.suggestion.total | currency: webviewSettings.currency : 'symbol-narrow' : webviewSettings.currencyFormat}}"
+    [buttonColor]="this.webviewSettings.theme.sendOrderButtonColor || this.webviewSettings.theme.customerColor"
+    [buttonDisabled]="(this.suggestion.productsCount <= 0)"
+    (buttonPressed)="addToCart()"></generic-views-footer>
+</div>

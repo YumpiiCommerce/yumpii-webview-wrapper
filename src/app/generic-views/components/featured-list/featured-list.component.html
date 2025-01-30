@@ -1,0 +1,55 @@
+<div class="featured-items-list-container">
+  <div *ngFor="let featuredItem of this.featuredItems" class="featured-item-container">
+    <ng-container *ngIf="featuredItem.displayMode === 'default'">
+      <div class="featured-item-card-wrapper" [ngStyle]="this.customStyle.getCustomStyle({type: 'featuredItem', attributes: ['backgroundColor'], item: featuredItem})">
+        <div class="featured-item-card">
+          <div class="featured-item-image">
+            <img [src]="featuredItem.imageURL">
+          </div>
+          <div class="featured-item-content">
+            <div class="featured-item-name">
+              <p [ngStyle]="this.customStyle.getCustomStyle({type: 'featuredItem', attributes: ['fontColor'], item: featuredItem})"> {{featuredItem.name}} </p>
+            </div>
+            <div class="featured-item-description" [ngStyle]="this.customStyle.getCustomStyle({type: 'featuredItem', attributes: ['fontColor'], item: featuredItem})">
+              {{featuredItem.description}}
+            </div>
+            <div class="featured-item-actions-wrapper">
+              <button type="button" class="detail-button" [ngStyle]="this.customStyle.getCustomStyle({type: 'featuredItem', attributes: ['fontColor', 'backgroundColor'], item: featuredItem})" (click)="goToFeaturedItem(featuredItem)">
+                Ver más
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+    <ng-container *ngIf="featuredItem.displayMode === 'banner'">
+      <div class="featured-item-card-wrapper" [ngStyle]="this.customStyle.getCustomStyle({type: 'featuredItem', attributes: ['backgroundColor'], item: featuredItem})" (click)="goToFeaturedItem(featuredItem)">
+        <img class="banner-image" [src]="featuredItem.imageURL">
+      </div>
+    </ng-container>
+  </div>
+  <ng-container *ngIf="this.displayDiscounts">
+    <div *ngFor="let product of this.discountProducts" class="featured-item-container">
+      <div class="featured-item-card-wrapper" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['backgroundColor'], item: product})">
+        <div class="featured-item-card">
+          <div class="product-image" [routerLink]="['/' + currentSlug + '/product/' + product.id]">
+            <img [src]="product.imageURL">
+          </div>
+          <div class="product-content">
+            <div class="featured-item-name" [routerLink]="['/' + currentSlug + '/product/' + product.id]">
+              <p [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: product})"> {{product.title}} </p>
+            </div>
+            <div class="featured-item-description" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: product})">
+              {{product.shortDescription || product.description}}
+            </div>
+            <div class="featured-item-actions-wrapper">
+              <button type="button" class="detail-button" [routerLink]="['/' + currentSlug + '/product/' + product.id]" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor', 'backgroundColor'], item: product})">
+                Ver más
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

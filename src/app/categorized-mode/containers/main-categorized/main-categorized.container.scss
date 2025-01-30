@@ -1,0 +1,9 @@
+#main-wrapper {
+  height: 100%;
+  overflow: hidden;
+
+  @media (min-width: 425px) {
+    position: relative;
+    max-width: 425px;
+  }
+}

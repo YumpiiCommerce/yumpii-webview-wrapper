@@ -1,0 +1,92 @@
+<div class="loyalty-wrapper" *ngIf="showRewardsInfo  && rewardsInfo.enabled && rewardsInfo.isRedeemable">
+  <div class="loyalty-payment-wrapper" *ngIf="hideCardsContainer()" [ngClass]="{'all-shadow': !cartView, 'bottom-shadow': cartView}">
+      @if(showLoyaltyPaymentCard) {
+          <div class="loyalty-payment-title-container">
+              <i class="ph ph-coins payment-icon"></i>
+              <p class="my-wallet-title" [innerHTML]="languageTexts.redemptionPaymentMethodTitle"></p>
+              <i class="ph ph-caret-down dropdown-icon" [ngClass]="{'rotate': hide}" (click)="dropdown()"></i>
+          </div>
+          <div #cardsContainer
+              class="payment-distribution-container"
+              [ngClass]="{'hide': hide }"
+              (mouseleave)="mouseLeaveCardContainer()"
+              (mouseup)="mouseUpCardContainer()"
+              (mousemove)="mouseMoveCardContainer($event)"
+          >
+              <div class="card-container">
+                  <div class="currency-payment">
+                      <div class="header cash">
+                          <div class="loyalty-icon-container">
+                              <i class="ph ph-coins payment-icon"></i>
+                          </div>
+                      </div>
+                      <div class="distribution-quantity-container cash">
+                          <p class="amount-text cash">{{this.cart.finalTotal| currency: webviewSettings.currency : 'symbol-narrow' : webviewSettings.currencyFormat}}</p>
+                      </div>
+                  </div>
+                  <div #pointsContainer class="points-payment">
+                      <div class="header points">
+                          <div class="loyalty-icon-container points">
+                              <i class="ph-fill ph-tag offer-icon" [ngStyle]="{'color': webviewSettings.theme.customerColor}"></i>
+                          </div>
+                      </div>
+                      <div class="distribution-quantity-container points">
+                          <p class="amount-text points" [ngStyle]="{'color': getFontColor()}">{{redeemableRewards}} {{rewardsInfo.symbol}}</p>
+                      </div>
+                      <div #dragger
+                          (mousedown)="mouseDownDragger($event)"
+                          (mouseup)="mouseUpDragger()"
+                          (mousemove)="mouseMoveDragger($event)"
+                          (touchstart)="touchStartDragger($event)"
+                          (touchend)="touchEndDragger()"
+                          (touchcancel)="touchCancelDragger()"
+                          (touchmove)="touchMoveDragger($event)"
+                          class="dragger-wrapper"
+                      >
+                          <i class="ph ph-caret-left dragger-icon" [ngStyle]="getFooterFontColor()"></i>
+                          <i class="ph ph-caret-right dragger-icon" [ngStyle]="getFooterFontColor()"></i>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      }
+      <div class="exchange-points" [ngClass]="{'only-exchange-points': !showLoyaltyPaymentCard}">
+          <p class="exchange-rewards-text"> {{ languageTexts.redemptionExchangeText }}
+              <span class="exchange-rewards-span">+{{redeemableRewards}} {{rewardsInfo.symbol}}</span>
+              {{ languageTexts.redemptionEquivalentsTo }} {{ redeemableRewardsToCurrency| currency: webviewSettings.currency : 'symbol-narrow' : webviewSettings.currencyFormat}}</p>
+      </div>
+  </div>
+  <div class="my-wallet-wrapper" [ngClass]="{'all-shadow': !cartView, 'bottom-shadow': cartView}">
+      @if (showRewardsProgress) {
+          <div class="my-wallet-content">
+              <div class="title-container">
+                  <div class="title-wrapper">
+                      <i class="ph ph-cardholder gift-icon"></i>
+                      <p class="my-wallet-title" [innerHTML]="languageTexts.redemptionWalletTitle"></p>
+                  </div>
+              </div>
+              <div class="my-points-container">
+                  <div class="my-points">
+                      <i class="ph-fill ph-tag offer-icon"></i>
+                      <p class="my-points-text">{{getMyUnderText()}}</p>
+                      <p class="rewards-sybol">{{rewardsInfo.symbol}}</p>
+                  </div>
+                  <div class="available-container" *ngIf="!cartView">
+                      <p class="available-text" [innerHTML]="languageTexts.availableRedemptionPointsText"></p>
+                  </div>
+              </div>
+          </div>
+          <div class="progress-bar-container" *ngIf="rewardsInfo.maxAccumulation > 0">
+              <div class="progress-bar">
+                  <div class="bar" [ngStyle]="{'width': getProgressBarWidth()}"></div>
+              </div>
+          </div>
+      }
+          <div class="accumulated-rewards" *ngIf="cartView && !hasEnoughRewards && rewardsInfo.isRedeemable && !exceedsMaxRedemption" [ngClass]="{'only-accumulated-rewards': !showRewardsProgress}">
+              <p *ngIf="!hasEnoughRewards" class="not-enough-points-text"> <i class="ph ph-warning"></i> <span [innerHTML]="languageTexts.warningInsufficientPoints"></span></p>
+          </div>
+          <div class="accumulated-rewards" *ngIf="cartView && rewardsInfo.isRedeemable && exceedsMaxRedemption" [ngClass]="{'only-accumulated-rewards': !showRewardsProgress}">
+              <p *ngIf="exceedsMaxRedemption" class="not-enough-points-text"> <i class="ph ph-warning"></i> <span [innerHTML]="languageTexts.warningMaximumPurchaseWithPoints"></span></p>
+          </div>
+      </div>
+</div>

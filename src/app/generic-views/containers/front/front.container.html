@@ -1,0 +1,36 @@
+<div id="main-wrapper" [ngStyle]="this.getBodyBackgroundColor()">
+  <div *ngIf="isRootSegment" class="front-wrapper">
+    <div class="main-header">
+      <generic-views-header [showBackButton]="false" [showSearchBox]="true" [showCartButton]="!singleProductMode" [showHumanButton]="this.webviewConfig.showHumanHelp"></generic-views-header>
+      <generic-views-categories-nav *ngIf="webviewConfig?.displayCategoriesNav !== false && this.searchTerm.length === 0" [showAllButton]="webviewConfig.showAllCategoriesButton" [siblings]="(this.mainCategories | async) || []" (selectedCategoryChanged)="selectCategory($event)" [selectedCategory]="this.selectedCategory"></generic-views-categories-nav>
+    </div>
+
+    <subcategories-list [forceCategoriesRoute]="isRootCategory(this.selectedCategory.id)" class="subcategories-list" [topOffset]="'calc(var(--categorized-header-size) + var(--categorized-navbar-size))'" [heightOffset]="'var(--main-footer-size)'"  *ngIf="this.selectedCategory && this.selectedCategory.children && this.selectedCategory.children.length > 0 && this.searchTerm.length === 0"></subcategories-list>
+    <div *ngIf="this.resultProducts.length > 0 && (this.searchTerm.length > 0 || (this.selectedCategory && !this.selectedCategory.children) || this.selectedCategory?.children?.length === 0)" class="products-container scrollable"
+        infiniteScroll
+        [infiniteScrollDistance]="1"
+        [infiniteScrollThrottle]="100"
+        (scrolled)="containerScrolled()"
+        [scrollWindow]="false"
+        [ngClass]="{
+          'search-container': this.searchTerm.length > 0,
+          'h-full': singleProductMode && !this.languageTexts.footerDisclaimer,
+          'has-categories-nav': webviewConfig.displayCategoriesNav !== false
+        }">
+      <generic-views-products-list [products]="this.resultProducts" [search]="this.searchTerm.length > 0" [combos]="this.loadedCombos | async"></generic-views-products-list>
+    </div>
+    <generic-views-footer class="footer-component"
+      *ngIf="!singleProductMode || this.languageTexts.footerDisclaimer"
+      [showActionsRow]="!this.singleProductMode"
+      [disclaimerText]="this.languageTexts.footerDisclaimer"
+      [buttonText]="this.languageTexts.goToCartButtonText"
+      smallText="{{this.cart.productsCount}} {{ this.cart.productsCount === 1 ? this.languageTexts.counterLabelSingle : this.languageTexts.counterLabelPlural }}"
+      bigText="{{this.cart.total | currency: webviewConfig.currency : 'symbol-narrow' : webviewConfig.currencyFormat}}"
+      [altBigText]="this.cart.subtotal > this.cart.total ? (this.cart.subtotal | currency: webviewConfig.currency : 'symbol-narrow' : webviewConfig.currencyFormat) || '': ''"
+      [buttonColor]="this.webviewConfig.theme.footerButtonColor || this.webviewConfig.theme.customerColor"
+      [buttonDisabled]="false"
+      (buttonPressed)="goToCart()">
+    </generic-views-footer>
+  </div>
+  <router-outlet *ngIf="!isRootSegment"></router-outlet>
+</div>

@@ -1,0 +1,64 @@
+<div class="footer" [ngClass]="{ 'delimited': this.delimited }" [ngStyle]="this.getFooterBackgroundColor()">
+
+  <div class="accordion" *ngIf="false" [ngClass]="{'hide': !itIsConfirmed}">
+    <div class="payment-methods" [ngClass]="{'hide': !itIsConfirmed}">
+      <div class="method" *ngIf="clientPaymentMethods?.includes('online')">
+        <div class="btn-icon-container">
+          <mat-icon class="btn-icon" (click)="paymentMethodClicked('online')" svgIcon="online"></mat-icon>
+          <mat-icon class="background-icon" svgIcon="ellipse1"></mat-icon>
+          <mat-icon class="background-icon" svgIcon="ellipse2"></mat-icon>
+        </div>
+        <p>{{this.languageTexts.onlinePaymentText}}</p>
+      </div>
+      <div class="method" *ngIf="clientPaymentMethods?.includes('cash')">
+        <div class="btn-icon-container">
+          <mat-icon class="btn-icon" (click)="paymentMethodClicked('cash')" svgIcon="cash"></mat-icon>
+          <mat-icon class="background-icon" svgIcon="ellipse1"></mat-icon>
+          <mat-icon class="background-icon" svgIcon="ellipse2"></mat-icon>
+        </div>
+        <p>{{ this.languageTexts.cashPaymentText }}</p>
+      </div>
+      <div class="method" *ngIf="clientPaymentMethods?.includes('other')">
+        <div class="btn-icon-container">
+          <mat-icon class="btn-icon" (click)="paymentMethodClicked('other')" svgIcon="other"></mat-icon>
+          <mat-icon class="background-icon" svgIcon="ellipse1"></mat-icon>
+          <mat-icon class="background-icon" svgIcon="ellipse2"></mat-icon>
+        </div>
+        <p>{{ this.languageTexts.otherPaymentText }}</p>
+      </div>
+    </div>
+
+    <div class="circle">
+      <div class="icon-container">
+        <mat-icon class="accordion-icon" [ngClass]="{'hide': !itIsConfirmed}" (click)="closePaymentMethods()" svgIcon="exxe"></mat-icon>
+        <mat-icon class="accordion-icon" [ngClass]="{'hide': itIsConfirmed}" svgIcon="yumpii"></mat-icon>
+      </div>
+    </div>
+    <div class="circle-base"> </div>
+
+  </div>
+  <div class="container">
+    <div *ngIf="this.disclaimerText" class="disclaimer">{{this.disclaimerText}}</div>
+    <div class="actions-row" *ngIf="this.showActionsRow">
+      <div class="info-text-container" [ngStyle]="this.getFooterBackgroundColor()" *ngIf="showInfoText">
+        <p class="info-text-small" [ngClass]="{'redeem-rewards': convertStringToNumber(underText) != 0}" [ngStyle]="this.getFooterFontColor().color ? this.getFooterFontColor() : { 'color': smallTextColor }">{{smallText}}</p>
+        <div class="info-text-big"><span *ngIf="altBigText" class="alt-text-big" [ngStyle]="this.getFooterFontColor()">{{altBigText}}</span><span [ngStyle]="this.getFooterFontColor()">{{bigText}}</span></div>
+        <div class="redeemed-rewards" *ngIf="convertStringToNumber(underText) != 0" [ngStyle]="this.getFooterFontColor()">{{underText}}</div>
+      </div>
+      <div class="secondary-button" *ngIf="this.showSecondaryButton">
+        <button type="button"
+          [ngStyle]="{ 'background-color': this.secondaryButtonDisabled ? '#CCCCCC' : this.secondaryButtonColor}" (click)="secondaryButtonClicked()">
+          <i class="ph-{{this.secondaryButtonIcon}}"></i>
+        </button>
+      </div>
+      <div class="action-button" [ngClass]="{'rigth': showInfoText}">
+        <button type="button"
+          [ngStyle]="{ 'background-color': buttonDisabled ? '#CCCCCC' : buttonColor }" [disabled]="buttonDisabled" (click)="buttonClicked()">
+          <div>
+            <p [ngStyle]="this.customStyle.getCustomStyle({type: 'general', attributes: ['footerButtonFontColor'] })">{{buttonText}}</p>
+          </div>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

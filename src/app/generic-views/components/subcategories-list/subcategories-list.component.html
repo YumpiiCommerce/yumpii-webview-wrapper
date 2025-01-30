@@ -1,0 +1,15 @@
+<div class="subcategories-list-wrapper scrollable" [ngStyle]="{
+  'top': topOffset,
+  'height': 'calc(100% - ' + heightOffset + ' - ' + topOffset + ')'
+}">
+  <div class="subcategories-list-container">
+    <div *ngFor="let category of this.categories" class="subcategory-container">
+      <div class="subcategory-card" style="background-image: url('{{category.imageUrl}}')" [routerLink]="[(rootCategories || forceCategoriesRoute ? 'category/' : '../') + category.id]">
+        <div class="subcategory-name" *ngIf="category.displayBannerText" [ngStyle]="{ 'margin-top': category.labelMargin ? category.labelMargin + 'px' : 'none', 'background-color': 'rgb(0, 0, 0, ' + category.bannerOverlayOpacity + ')', 'color': category.bannerTextColor  }">{{category.name}}</div>
+        <div class="subcategory-button">
+          <button type="button" [ngStyle]="this.customStyle.getCustomStyle({type: 'general', attributes: ['subcategoryListButtonFontColor'] })" [routerLink]="[(rootCategories || forceCategoriesRoute ? 'category/' : '../') + category.id]">Ver más</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

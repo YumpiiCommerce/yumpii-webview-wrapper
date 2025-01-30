@@ -1,0 +1,83 @@
+.content-wrapper {
+  align-items: center;
+  background-color: #F0F0F0;
+  justify-content: center;
+  display: grid;
+  grid-template-columns: 100%;
+  grid-template-rows: min-content;
+  align-content: center;
+  overflow-y: auto;
+  overflow-x: hidden;
+  grid-row-gap: 12px;
+  grid-column-gap: 8px;
+  flex: 1 1 auto;
+  // padding: 24px;
+  text-align: center;
+  height: 100%;
+  vertical-align: middle;
+}
+
+.action-button {
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  height: 40px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+.payment-error {
+  height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  mat-icon {
+    color: red;
+    font-size: 120px;
+    height: fit-content;
+    width: fit-content;
+  }
+  .error-title {
+    margin-top: 20px;
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 21px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: var(--customer-color);
+  }
+  .error-message {
+    margin-top: 15px;
+    width: 75%;
+    font-family: 'Roboto';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 16px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: black;
+    margin-bottom: 15px;
+  }
+}
+
+.button-retry {
+  border: none;
+  width: 75%;
+  border-radius: 4px;
+  color: white;
+  background-color: var(--customer-color);
+  font-size: 12px;
+  font-weight: bold;
+  height: 40px;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}

@@ -1,1 +1,228 @@
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+@include mat.core();
+// Plus imports for other components in your app.
+
+$yumpii-primary-palette: (
+ 100: #ffcdb8,
+ 200: #ffad8b,
+ 300: #ff8d5b,
+ 400: var(--customer-color),
+ 500: #ff5e00,
+ 600: #f45700,
+ 700: #e65000,
+ 800: #d94900,
+ 900: #c13a00,
+ contrast: (
+   50: rgba(black, 0.87),
+   100: rgba(black, 0.87),
+   200: rgba(black, 0.87),
+   300: white,
+   400: white,
+   500: white,
+   600: white,
+   700: white,
+   800: white,
+   900: white,
+ )
+);
+
+$yumpii-secondary-palette: (
+ 50: #e8eafd,
+ 100: #c3cafa,
+ 200: #99a7f7,
+ 300: #6a85f5,
+ 400: #3e68f2,
+ 500: #004ced,
+ 600: #0043e2,
+ 700: #0038d5,
+ 800: #002cca,
+ 900: #0015b2,
+ contrast: (
+   50: rgba(black, 0.87),
+   100: rgba(black, 0.87),
+   200: rgba(black, 0.87),
+   300: white,
+   400: white,
+   500: white,
+   600: white,
+   700: white,
+   800: white,
+   900: white,
+ )
+);
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$yumpii-webview-primary: mat.m2-define-palette($yumpii-primary-palette, 400);
+$yumpii-webview-accent: mat.m2-define-palette($yumpii-secondary-palette, 500);
+
+// The warn palette is optional (defaults to red).
+$yumpii-webview-warn: mat.m2-define-palette(mat.$m2-red-palette);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$yumpii-webview-theme: mat.m2-define-light-theme((
+  color: (
+    primary: $yumpii-webview-primary,
+    accent: $yumpii-webview-accent,
+    warn: $yumpii-webview-warn,
+  )
+));
+
+@include mat.all-component-themes($yumpii-webview-theme);
+
 /* You can add global styles to this file, and also import other style files */
+:root {
+  --customer-color: #FF5C00;
+  --customer-background-color: #3E68F2;
+  --customer-footer-background-color: #ec2a8b;
+  --customer-input-color: #ec2a8b;
+  --customer-navbar-color: #ec2a8b;
+  --customer-scroll-background-color: #f1f1f1;
+  --customer-scroll-thumb-color: var(--customer-color);
+  --carousel-height: 120px;
+  --carousel-dots-color: #000000;
+  --carousel-dots-position: center;
+  --categorized-main-header-size: 150px;
+  --categorized-header-size: 60px;
+  --categorized-navbar-size: 40px;
+  --categorized-featured-carousel-size: 165px;
+  --search-box-size: 45px;
+  --main-footer-size: 64px;
+  --products-list-columns-size: 50% 50%;
+  --combos-banner-height: 179px;
+  --comment-wrapper-height: 125px;
+  --comment-height: 65px;
+}
+
+body, html {
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    touch-action: manipulation;
+  }
+
+  body {
+    font-size: 12px;
+  }
+
+  button {
+    touch-action: manipulation !important;
+  }
+
+  @media screen and (min-width: 425px) and (max-width: 760px) and (orientation: landscape) {
+    height: 100%;
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+/* Scroll bars */
+div::-webkit-scrollbar {
+  width: 4px;
+  margin-right: -4px;
+}
+
+div::-webkit-scrollbar-button {
+  background: #f1f1f1;
+  height: 2px;
+}
+
+div::-webkit-scrollbar-track-piece {
+  background: var(--customer-scroll-background-color);
+}
+
+div::-webkit-scrollbar-thumb {
+  background: var(--customer-scroll-thumb-color);
+}
+/* Scroll bars */
+
+a {
+  text-decoration: none;
+}
+
+.tab-pane {
+  height: 100%;
+
+  /*::-webkit-scrollbar {
+    display: none;
+  }
+
+  -ms-overflow-style: none;  // IE and Edge
+  scrollbar-width: none;  // Firefox */
+}
+
+button:focus {
+  outline-width: 1px;
+  outline-color: #888;
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif !important; }
+
+@import 'ngx-owl-carousel-o/lib/styles/scss/owl.carousel';
+@import 'ngx-owl-carousel-o/lib/styles/scss/owl.theme.default';
+
+.gallery-carousel {
+  .owl-nav {
+    margin: 0 10px;
+    margin-top: -70px;
+    z-index: 99;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+
+    .owl-next, .owl-prev {
+      box-shadow: 0 0 0 1px #FFF;
+    }
+  }
+
+  .owl-dots {
+    margin: 0 40px;
+    z-index: 99;
+    position: relative;
+  }
+}
+
+
+@import "scss/material/main";
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+// Featured items carousel styles
+owl-carousel-o {
+  .owl-dots {
+    display: flex;
+    align-items: center;
+    position: relative;
+    height: 24px;
+    top: - 24px;
+    margin-left: 12px;
+    margin-right: 12px;
+    justify-content: var(--carousel-dots-position);
+    .owl-dot {
+      margin: auto 1px;
+      span {
+        background: transparent !important; /*active and on hover color*/
+        border: 2px solid var(--carousel-dots-color) !important;
+        margin: 0 !important;
+        width: 9px !important;
+        height: 9px !important;
+      }
+    }
+    .owl-dot.active span {
+      background: var(--carousel-dots-color) !important;
+    }
+  }
+}
+
+.mat-mdc-tab-group,
+.mat-mdc-tab-body-wrapper {
+  height: 100%;
+}

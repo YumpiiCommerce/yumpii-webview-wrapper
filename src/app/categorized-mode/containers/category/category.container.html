@@ -1,0 +1,43 @@
+<div id="main-wrapper">
+  <generic-views-header [showSearchBox]="true" [showHumanButton]="webviewConfig.showHumanHelp" [showCartButton]="!this.singleProductMode" ></generic-views-header>
+  <generic-views-categories-nav *ngIf="webviewConfig?.displayCategoriesNav !== false && this.searchTerm.length === 0" [siblings]="this.siblingCategories" [selectedCategory]="this.selectedCategory" (selectedCategoryChanged)="setSelectedCategory($event)"></generic-views-categories-nav>
+
+  <div class="body-component" [ngClass]="{'featured-carousel-bottom': showCarousel && positionCarousel === 'bottom'}">
+    <ng-container *ngIf="showCarousel && !!positionCarousel && this.searchTerm.length === 0">
+      <div #featuredCarousel class="featured-carousel-wrapper">
+        <yumpii-featured-carousel [showCarouselHeader]="false"></yumpii-featured-carousel>
+      </div>
+    </ng-container>
+
+    <subcategories-list [topOffset]="getTopOffsetSubCategories()" [heightOffset]="showCarousel && positionCarousel === 'bottom' ? 'var(--main-footer-size) - var(--categorized-featured-carousel-size)' : 'var(--main-footer-size)'"  *ngIf="this.selectedCategory && this.selectedCategory.children && this.selectedCategory.children.length > 0 && this.searchTerm.length === 0"></subcategories-list>
+
+    <div *ngIf="this.resultProducts.length > 0 && (this.searchTerm.length > 0 || !this.selectedCategory?.children || this.selectedCategory?.children?.length === 0)"
+      infiniteScroll
+      [infiniteScrollDistance]="1"
+      [infiniteScrollThrottle]="100"
+      (scrolled)="containerScrolled()"
+      [scrollWindow]="false"
+      class="products-container scrollable"
+      [ngClass]="getDynamicClassesFromContainer()">
+      <yumpii-loyalty-summary
+        [cartView]="false"
+        [cartProductsCount]="cart.productsCount"
+        [cartTotal]="cart.total"
+      ></yumpii-loyalty-summary>
+      <generic-views-products-list [products]="this.resultProducts" [search]="this.searchTerm.length > 0" [combos]="this.loadedCombos"></generic-views-products-list>
+    </div>
+  </div>
+
+  <generic-views-footer class="footer-component"
+    *ngIf="!singleProductMode || this.languageTexts.footerDisclaimer"
+    [showActionsRow]="!this.singleProductMode"
+    [disclaimerText]="this.languageTexts.footerDisclaimer"
+    [buttonText]="this.languageTexts.goToCartButtonText"
+    smallText="{{this.cart.productsCount}} {{ this.cart.productsCount === 1 ? this.languageTexts.counterLabelSingle : this.languageTexts.counterLabelPlural }}"
+    bigText="{{this.cart.finalTotal | currency: webviewConfig.currency : 'symbol-narrow' : webviewConfig.currencyFormat}}"
+    [underText]="cart.redeemableRewards + ' ' + rewardsInfo.symbol"
+    [altBigText]="this.cart.subtotal > this.cart.finalTotal ? (this.cart.subtotal | currency: webviewConfig.currency : 'symbol-narrow' : webviewConfig.currencyFormat)|| '' : ''"
+    [buttonColor]="this.webviewConfig.theme.footerButtonColor"
+    [buttonDisabled]="false"
+    (buttonPressed)="goToCart()"></generic-views-footer>
+</div>

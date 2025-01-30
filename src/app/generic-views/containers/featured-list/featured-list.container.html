@@ -1,0 +1,14 @@
+<div class="main-wrapper">
+  <generic-views-header [showHumanButton]="this.webviewConfig?.showHumanHelp" ></generic-views-header>
+  <div class="combos-list-container">
+    <generic-views-featured-list [featuredItems]="this.featuredItems" [displayDiscounts]="true" [products]="this.products"></generic-views-featured-list>
+  </div>
+  <generic-views-footer class="footer-component"
+      [buttonText]="this.languageTexts.goToCartButtonText"
+      smallText="{{this.cart.productsCount}} {{ this.cart.productsCount === 1 ? this.languageTexts.counterLabelSingle : this.languageTexts.counterLabelPlural }}"
+      bigText="{{this.cart.total | currency: webviewConfig.currency : 'symbol-narrow' : webviewConfig.currencyFormat}}"
+      [altBigText]="this.cart.subtotal > this.cart.total ? (this.cart.subtotal | currency: webviewConfig.currency : 'symbol-narrow' : webviewConfig.currencyFormat) || '': ''"
+      [buttonColor]="this.webviewConfig.theme.footerButtonColor || this.webviewConfig.theme.customerColor"
+      [buttonDisabled]="false"
+      (buttonPressed)="goToCart()"></generic-views-footer>
+</div>

@@ -1,0 +1,24 @@
+<div class="payment-container">
+  <div *ngIf="transactionStatus === 'APPROVED'" class="approved">
+      <mat-icon>check_circle_outline</mat-icon>
+      <div class="approved-message">
+          <p>¡Tu pago ha sido exitoso!</p>
+          <button (click)="returnToChannel()">Regresar al canal <mat-icon>arrow_circle_left</mat-icon></button>
+      </div>
+  </div>
+
+  <generic-views-header [showCartButton]="false"></generic-views-header>
+
+  <div class="payment-object">
+      <generic-views-payment [installments]="installments" [transactionStatus]="transactionStatus" [cart]="cart" (cardInfo)="getCardInfo($event)"></generic-views-payment>
+  </div>
+
+  <generic-views-footer class="footer-component"
+      buttonText ="Pagar"
+      [buttonDisabled]="invalid"
+      [buttonColor]="this.webviewConfig.theme.footerButtonColor || this.webviewConfig.theme.customerColor"
+      [showInfoText]="false"
+      (buttonPressed)="pay()">
+  </generic-views-footer>
+</div>
+
