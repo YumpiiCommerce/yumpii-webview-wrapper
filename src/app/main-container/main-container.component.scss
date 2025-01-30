@@ -1,0 +1,46 @@
+#webview-container {
+  /* height: 100vh; */
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  /* height: 100%; */
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+  /* align-items: center; */
+
+  @media (min-width: 425px) {
+    justify-content: center;
+    align-items: center;
+  }
+
+  @media screen and (min-width: 425px) and (max-width: 760px) and (orientation: landscape) {
+    height: 100%;
+    max-width: 100%;
+    width: 100%;
+  }
+}
+
+#fake-mobile {
+  background: #fff;
+  height: 100%;
+
+  @media (min-width: 425px) {
+    height: 100%;
+    min-width: 425px;
+    max-width: 425px;
+    min-height: 720px;
+    max-height: 720px;
+    overflow: auto;
+    position: relative;
+    box-shadow: 3px 9px 17px 1px rgba(194, 194, 194, 0.75);
+  }
+
+  @media screen and (min-width: 425px) and (max-width: 760px) and (orientation: landscape) {
+    height: 100%;
+    max-width: 100%;
+    width: 100%;
+  }
+}

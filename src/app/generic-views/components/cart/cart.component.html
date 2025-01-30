@@ -1,0 +1,160 @@
+<div class="cart-wrapper" [ngStyle]="this.getBodyBackgroundColor()">
+  <generic-views-modal *ngIf="modalVisible" [message]="modalMessage" [actionText]="modalActionText" [cancelText]="modalCancelText" (onActionRequested)="modalAction()" (onCancelRequested)="modalCancel()" ></generic-views-modal>
+
+  <div class="cart-contents">
+    <div class="cart-title">
+      <p [ngStyle]="this.getBodyFontColor()">
+        {{this.languageTexts.cartTitle}}
+      </p>
+      <div class="cart-options">
+        <a *ngIf="this.cart.productsCount > 0" class="empty-cart" (click)="emptyCart()" [ngStyle]="this.getBodyFontColor()">
+          {{this.languageTexts.emptyCartLabel}}
+        </a>
+      </div>
+    </div>
+
+    <div class="products-list-container">
+      <ng-container *ngFor="let cartProduct of this.cart.products; index as index">
+        <div *ngIf="cartProduct.quantity > 0" class="product-container">
+          <div class="product-options">
+            <button type="button" class="remove-button" (click)="triggerQuantityEvents(cartProduct.product, (-1 * cartProduct.quantity)); cartProduct.setQuantity(0); quantityChanged()"><i class="fas fa-trash-alt"></i></button>
+          </div>
+          <div class="product-card-wrapper" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['backgroundColor'], item: cartProduct.product})">
+            <div class="tags">
+              <div *ngIf="cartProduct.product.discounts && cartProduct.product.discounts.length > 0" class="tag" style="background-image: url(assets/images/tag_green.svg)" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: cartProduct.product})">
+                {{this.languageTexts.promoTagText}}
+              </div>
+              <div *ngIf="this.hasBonuses(cartProduct.product.id)" class="tag" style="background-image: url(assets/images/tag_yellow.svg)" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: cartProduct.product})">
+                {{this.languageTexts.bonusTagText}}
+              </div>
+            </div>
+            <div class="product-card">
+              <div class="product-image" [routerLink]="['/' + currentSlug + '/product/' + cartProduct.product.id]" [queryParams]="{ edit: index }">
+                <img [src]="cartProduct.product.imageURL
+                            || (cartProduct.product.imageURLs ? cartProduct.product.imageURLs[0] : '')
+                            || (cartProduct.product.mediaURLs ? cartProduct.product.mediaURLs[0] : '')
+                            || defaultImage">
+              </div>
+              <div class="product-content">
+                <div class="product-header">
+                  <div class="product-name" [routerLink]="['/' + currentSlug + '/product/' + cartProduct.product.id]" [queryParams]="{ edit: index }">
+                    <p [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: cartProduct.product})"> {{cartProduct.product.title}} </p>
+                  </div>
+                  <div *ngIf="showRewardsLabel(cartProduct)" class="rewards-label">
+                    {{getRewardsLabel(cartProduct.product)}}
+                  </div>
+                </div>
+                <div>
+                  <div class="product-description" [innerHTML]="(cartProduct.product.shortDescription || cartProduct.product.description) | safe:'html'" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: cartProduct.product})"></div>
+                  <ng-container *ngFor="let customization of cartProduct.product.customizations">
+                    <ul class="product-customizations-container" *ngIf="(cartProduct.getCustomizationParentOptions(customization._id).length === 0 || cartProduct.getCustomizationSelectedParentOptions(customization).length > 0) && cartProduct.getCustomizationQuantity(customization._id) > 0">
+                      <ng-container *ngFor="let option of customization.options">
+                        <li *ngIf="option.quantity > 0">
+                          {{option.quantity > 1 ? option.quantity : ''}} - {{ webviewSettings.showSummaryCustomizationName !== false ? customization.title + ': ': ''}}{{option.title}}
+                        </li>
+                      </ng-container>
+                    </ul>
+                  </ng-container>
+                </div>
+              </div>
+            </div>
+            <div class="product-actions-wrapper" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: cartProduct.product, custom: {'border-color': 'fontColor'}})">
+              <div class="product-price" *ngIf="!showRewardsPrice(cartProduct.product)" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: cartProduct.product})">
+                <span *ngIf="cartProduct.regularSubtotal > cartProduct.subtotal" class="regular-subtotal">{{cartProduct.regularSubtotal | currency: webviewSettings.currency : 'symbol-narrow' : webviewSettings.currencyFormat}}</span>
+                {{cartProduct.subtotal | currency: webviewSettings.currency : 'symbol-narrow' : webviewSettings.currencyFormat}}
+              </div>
+              <div *ngIf="this.rewardsInfo && cartProduct.product.rewardsRedemption && showRewardsPrice(cartProduct.product)" class="product-price">
+                {{getRewardsPrice(cartProduct)}}
+              </div>
+              <div class="product-quantity-handler">
+                <div class="product-counter" *ngIf="cartProduct.product.max !== 1">
+                  <button type="button" class="minus-button" (click)="changeQuantity(cartProduct, 1, 'decrease')" [disabled]="(cartProduct.product.min > 1 && cartProduct.product.min == cartProduct.quantity) || cartProduct.quantity === 1"><i class="fas fa-minus"></i></button>
+                  <input type="number" step="1" min="1" class="current-count" (change)="changeQuantity(cartProduct, $event.target, 'set')" (keypress)="validateNumbers($event)" [value]="cartProduct.quantity" />
+                  <button type="button" class="plus-button" (click)="changeQuantity(cartProduct, 1, 'increase')" [disabled]="cartProduct.product.max > 0 && cartProduct.product.max <= cartProduct.quantity"><i class="fas fa-plus"></i></button></div>
+                <div class="product-counter" *ngIf="cartProduct.product.max === 1">
+                  <button type="button" class="minus-button" (click)="changeQuantity(cartProduct, 1, 'decrease')"><i class="fas fa-trash-alt"></i></button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+      <div *ngIf="false" class="products-overlay"></div>
+    </div>
+
+    <div *ngIf="this.cart.bonuses.length > 0" class="cart-title" style="margin-top: -30px;">
+      <p [ngStyle]="this.getBodyFontColor()">
+        {{this.languageTexts.cartBonus}}
+      </p>
+    </div>
+
+    <div class="products-list-container">
+      <ng-container *ngFor="let bonus of this.cart.bonuses; index as index">
+        <div *ngIf="bonus.quantity > 0" class="product-container">
+          <div class="bonus-product-card-wrapper" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['backgroundColor'], item: bonus.product})">
+            <div class="product-card">
+              <div class="product-image">
+                <img [src]="bonus.product.imageURL">
+              </div>
+              <div class="bonus-product-content">
+                <div *ngIf="!bonus.comboName" class="product-name">
+                  <p [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: bonus.product})"> {{bonus.product.title}} </p>
+                </div>
+                <div *ngIf="bonus.comboName" class="product-description">
+                  <strong [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: bonus.product})"> {{bonus.comboName}} </strong>
+                </div>
+                <div class="product-description" [innerHTML]="(bonus.product.shortDescription || bonus.product.description) | safe:'html'" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: bonus.product})"></div>
+              </div>
+              <div class="product-price" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: bonus.product})"> {{bonus.quantity | number : '1.0-2'}} {{bonus.unitsOverride}} </div>
+            </div>
+          </div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="footer-cart">
+    <div
+      class="cart-comment-wrapper"
+      [ngClass]="{ 'cart-comment-padding-bottom': !(webviewSettings.showRewardsInfo && rewardsInfo.enabled && rewardsInfo.isRedeemable) }"
+      *ngIf="showCartComment()"
+      data-testid="cart-comment-wrapper"
+    >
+      <yumpii-comment
+        [comment]="cart.cartComment"
+        [commentTitle]="languageTexts.cartCommentTitle"
+        borderRadius="10px"
+        (onChange)="setComment($event)"
+      ></yumpii-comment>
+    </div>
+    <yumpii-loyalty-summary
+      [cartView]="true"
+      [cartProductsCount]="cart.productsCount"
+      [cartTotal]="cart.total"
+      [showLoyaltyPaymentCard]="showLoyaltyPaymentCard"
+    ></yumpii-loyalty-summary>
+  </div>
+
+  <generic-views-footer class="footer-component"
+    [delimited]="!(webviewSettings.showRewardsInfo && this.rewardsInfo.enabled && this.rewardsInfo.isRedeemable) && !showCartComment()"
+    [buttonText]="this.languageTexts.sendOrderButtonText"
+    smallTextColor="{{ (this.cart.finalTotal < this.cart.minOrder || (this.cart.maxOrder > 0 && this.cart.maxOrder < this.cart.finalTotal)) ? 'red' : '#ABABAB' }}"
+    smallText="{{ (this.cart.finalTotal < this.cart.minOrder)
+      ? this.languageTexts.minOrderText + ': ' + (this.cart.minOrder | currency: webviewSettings.currency : 'symbol-narrow' : webviewSettings.currencyFormat)
+      : (this.cart.maxOrder > 0 && this.cart.maxOrder < this.cart.finalTotal)
+        ? this.languageTexts.maxOrderText + ': ' + (this.cart.maxOrder | currency: webviewSettings.currency : 'symbol-narrow' : webviewSettings.currencyFormat)
+        : this.cart.productsCount + ' ' + (this.cart.productsCount === 1 ? this.languageTexts.counterLabelSingle : this.languageTexts.counterLabelPlural) }}"
+    bigText="{{(this.cart.finalTotal) | currency: webviewSettings.currency : 'symbol-narrow' : webviewSettings.currencyFormat}}"
+    [underText]="cart.redeemableRewards + ' ' + rewardsInfo.symbol"
+    [altBigText]="this.cart.subtotal > this.cart.finalTotal ? (this.cart.subtotal | currency: webviewSettings.currency : 'symbol-narrow' : webviewSettings.currencyFormat) || '' : ''"
+    [buttonColor]="this.webviewSettings.theme.sendOrderButtonColor"
+    [buttonDisabled]="((this.cart.finalTotal < this.cart.minOrder) || (this.cart.maxOrder > 0 && this.cart.maxOrder < this.cart.finalTotal) || this.cart.productsCount <= 0 || !hasEnoughRewards || exceedsMaxRedemption)"
+    [secondaryButtonColor]="this.webviewSettings.theme.couponsButtonColor"
+    [showSecondaryButton]="this.webviewSettings.allowedCoupons"
+    (secondaryButtonPressed)="openCouponModal()"
+    (paymentMethodPressed)="clickHandle($event)"
+    (buttonPressed)="this.sendOrder()"
+    [clientPaymentMethods]="this.clientPaymentMethods"
+    [showAccordion]="true">
+  </generic-views-footer>
+</div>

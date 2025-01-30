@@ -1,0 +1,21 @@
+<div class="categories-banners-list">
+  <div *ngIf="this.languageTexts.categoriesLabel !== '-'" class="categories-header">
+    <div class="categories-title" [ngStyle]="this.getBodyFontColor()">
+      {{this.languageTexts.categoriesLabel}}
+    </div>
+  </div>
+  <div *ngFor="let category of mainCategories | async" class="category-banner-container" [ngClass]="{ 'plain': !this.webviewSettings.displayCategoryBannerFooter }" [ngStyle]="this.getBodyBackgroundColor()">
+    <div class="image-banner" [routerLink]="['category', category.id]">
+      <img class="category-banner" [src]="category.bannerUrl">
+    </div>
+    <div *ngIf="this.webviewSettings.displayCategoryBannerFooter" class="category-info">
+      <div class="info-box">
+        <div class="category-name" [routerLink]="['category', category.id]">{{category.name}}</div>
+        <div class="category-description">{{category.description}}</div>
+      </div>
+      <div class="actions">
+        <button type="button" class="add-button" [routerLink]="['category', category.id]"><i class="fas fa-plus"></i></button>
+      </div>
+    </div>
+  </div>
+</div>

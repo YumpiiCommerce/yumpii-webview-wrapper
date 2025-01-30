@@ -1,0 +1,10 @@
+<div class="content-wrapper" [ngStyle]="{'background-color': backgroundColor }">
+  <div class="payment-error">
+    <mat-icon>error_outline</mat-icon>
+    <p class="error-title">{{this.title}}</p>
+    <p class="error-message">{{this.message}}</p>
+    <button class="button-retry" [ngStyle]="{'background-color': buttonBackgroundColor, 'color': buttonFontColor }" type="button" (click)="executeAction()">
+      {{this.buttonLabel}}
+    </button>
+  </div>
+</div>

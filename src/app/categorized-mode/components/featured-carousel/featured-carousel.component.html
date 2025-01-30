@@ -1,0 +1,48 @@
+@if(showCarouselHeader) {
+  <div class="carousel-header">
+    <div class="carousel-title" [ngStyle]="this.getBodyFontColor()"> {{ this.languageTexts.combosHeaderText }} </div>
+    <div> <a class="carousel-link" [routerLink]="['/' + this.currentSlug + '/featured']"
+        [ngStyle]="this.getBodyFontColor()"> Ver todos </a> </div>
+  </div>
+}
+<div class="carousel-container" [ngStyle]="this.getBodyBackgroundColor()">
+  <owl-carousel-o [options]="{
+        items: 1,
+        nav: false,
+        autoHeight: false,
+        autoplay: true,
+        autoplayTimeout: 5000,
+        loop: true
+      }">
+    <ng-container *ngFor="let featuredItem of this.featuredItems index as index;">
+      <ng-template carouselSlide *ngIf="index < 8">
+        <ng-container *ngIf="featuredItem.displayMode === 'default'">
+          <div class="carousel-slide"
+            [ngStyle]="this.customStyle.getCustomStyle({type: 'featuredItem', attributes: ['backgroundColor'], item: featuredItem})"
+            (click)="goToFeaturedItem(featuredItem)">
+            <div class="slide-detail">
+              <div class="slide-name"
+                [ngStyle]="this.customStyle.getCustomStyle({type: 'featuredItem', attributes: ['fontColor'], item: featuredItem})">
+                {{featuredItem.name}} </div>
+              <div id="slide-description" class="slide-description"
+                [ngStyle]="this.customStyle.getCustomStyle({type: 'featuredItem', attributes: ['fontColor'], item: featuredItem, custom: {'-webkit-line-clamp': this.slideDetailsLines.toString() }})">
+                {{featuredItem.description}}
+              </div>
+            </div>
+            <div class="slide-image-container"
+              [ngStyle]="this.customStyle.getCustomStyle({type: 'featuredItem', attributes: ['backgroundColor'], item: featuredItem})">
+              <img class="slide-image" [src]="featuredItem.imageURL">
+            </div>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="featuredItem.displayMode === 'banner'">
+          <div class="carousel-slide"
+            [ngStyle]="this.customStyle.getCustomStyle({type: 'featuredItem', attributes: ['backgroundColor'], item: featuredItem})"
+            (click)="goToFeaturedItem(featuredItem)">
+            <img class="slide-image" [src]="featuredItem.imageURL">
+          </div>
+        </ng-container>
+      </ng-template>
+    </ng-container>
+  </owl-carousel-o>
+</div>

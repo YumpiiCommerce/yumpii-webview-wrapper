@@ -1,0 +1,118 @@
+<div class="product-container" *ngIf="product" [ngStyle]="this.customStyle.getCustomStyle({type: 'general', attributes: ['backgroundColor']})">
+  <div class="tags">
+    <div *ngIf="(product?.discounts?.length || 0) > 0" class="tag" style="background-image: url(assets/images/tag_green.svg)">
+      {{this.languageTexts.promoTagText}}
+    </div>
+    <div *ngIf="this.hasBonuses()" class="tag" style="background-image: url(assets/images/tag_yellow.svg)">
+      {{this.languageTexts.bonusTagText}}
+    </div>
+  </div>
+  <div class="badges">
+    <div *ngIf="this.webviewSettings.showFavorites" class="badge">
+      <button type="button" class="favorite-button" [ngClass]="{ 'selected': this.isFavorite }" (click)="this.toggleFavorite()">
+        <i class="fa-heart" [ngClass]="{ 'fas': this.isFavorite, 'fa-regular': !this.isFavorite }"></i>
+      </button>
+    </div>
+  </div>
+  <div class="media-container" [ngClass]="{ 'reduced': this.reducedImage }" (click)="focusOnMedia()" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['backgroundColor'], item: product})">
+    <yumpii-gallery [mediaURLs]="this.mediaURLs" class="gallery" [reduced]="this.reducedImage" [selectedPosition]="this.selectedMediaIndex" (selectedMediaChanged)="onSelectedMediaChanged($event)"></yumpii-gallery>
+  </div>
+  <div class="scrollable-content" id="scrollableContent" (scroll)="contentScroll($event)" [ngClass]="{ 'scrolled': this.reducedImage, 'has-product-comment': showProductComment(), 'without-customizations': (cartProduct.product.customizations.length || 0) <= 0 }">
+    <div class="product-info" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['backgroundColor'], item: product})">
+      <div class="product-content">
+        <div class="product-header">
+          <div class="product-name-container">
+            <p class="product-id" *ngIf="webviewSettings?.displayId || webviewSettings?.customAttribute">
+              {{ webviewSettings.idPrefix }}{{ webviewSettings.displayId ? product.id : product ? product[webviewSettings.customAttribute] : '' }}
+            </p>
+            <p class="product-name" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: product})"> {{ product.name }} </p>
+            <div *ngIf="this.productCategory && this.webviewSettings.displayProductCategory !== false" class="product-category" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['backgroundColorComplementary'], item: product})">
+              <span [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: product})">
+                {{ this.productCategory.name }}
+              </span>
+            </div>
+          </div>
+          <div *ngIf="showRewardsLabel()" class="rewards-label">
+            {{product.getRewardsLabel(rewardsInfo)}}
+          </div>
+        </div>
+
+        <div class="product-description-container" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'] ,item: product, custom: {'border-color': 'backgroundColorComplementary'}})">
+          <div class="product-description" [innerHTML]="(product.description || '') | safe:'html'" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: product})">
+          </div>
+        </div>
+        <div class="product-actions-wrapper" *ngIf="showSubtotal && (this.shouldDisplayPrice || this.shouldDisplayRewards || (product?.max !== 1 && !singleProductMode))">
+          <div *ngIf="this.shouldDisplayPrice" class="product-subtotal" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: product})">
+            <span *ngIf="cartProduct.product.getActualPrice(cartProduct.quantity) < (this.currentSubtotal / this.cartProduct.quantity)" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: product})">
+              {{this.languageTexts.priceFromText}}
+            </span>
+            <span *ngIf="cartProduct.product.regularPrice > cartProduct.product.getActualPrice(cartProduct.quantity)" class="regular-subtotal" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: product})">
+              {{cartProduct.product.regularPrice | currency: webviewSettings.currency : 'symbol-narrow' : webviewSettings.currencyFormat}}
+            </span>
+            {{cartProduct.product.getActualPrice(cartProduct.quantity) | currency: webviewSettings.currency : 'symbol-narrow' : webviewSettings.currencyFormat}}
+          </div>
+          <div *ngIf="this.shouldDisplayRewards" class="product-subtotal"
+            [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: product})"
+          >
+            {{product.getRewardsLabel(rewardsInfo)}}
+          </div>
+          <div class="product-counter-container" *ngIf="product?.max !== 1 && !singleProductMode">
+            <div class="product-counter">
+              <button type="button" class="minus-button" (click)="this.cartProduct.decreaseQuantity(1)"><i class="fas fa-minus"></i></button>
+              <input type="number" step="1" class="current-count" (change)="setQuantity($event)" (keypress)="validateNumbers($event)" [value]="this.cartProduct.quantity" />
+              <button type="button" class="plus-button" (click)="this.cartProduct.increaseQuantity(1)"><i class="fas fa-plus"></i></button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="product-customizations-container">
+      <ng-container *ngIf="cartProduct?.product?.customizations">
+        <generic-views-customization
+          *ngFor="let customization of cartProduct?.product?.customizations"
+          [cartProduct]="cartProduct"
+          [customization]="customization"
+          [selectedOptionId]="this.selectedOptionId"
+          (selectedOptionChanged)="onSelectedOptionChanged($event)"
+          (quantityChanged)="onCustomizationQuantityChanged($event)"
+          >
+        </generic-views-customization>
+      </ng-container>
+    </div>
+    <div *ngIf="(this.cartProduct?.product?.discounts?.length || 0) > 0" class="product-discounts-container" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['backgroundColor'], item: product})">
+      <div class="discounts-headers" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: product, custom: {'border-color': 'backgroundColorComplementary'}})">
+        <div  [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: product})">
+          Cantidad
+        </div>
+        <div [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: product})">
+          Descuento
+        </div>
+        <div class="discount-price-header" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: product})">
+          Precio Unitario
+        </div>
+      </div>
+      <div *ngIf="this.getDefaultDiscount() as defaultDiscount" class="discounts-info">
+        <div [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: product})">
+          {{defaultDiscount.min}}{{defaultDiscount.max !== defaultDiscount.min && defaultDiscount.max > 0 ? ' - ' + defaultDiscount.max : ''}}
+        </div>
+        <div class="discount-amount" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: product})">
+          {{defaultDiscount.amount > 0 ? (defaultDiscount.amount | number: '1.0-2') + this.languageTexts.discountPercentText : '' }}
+        </div>
+        <div class="discount-price" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: product})">
+          {{this.cartProduct.product.getActualPrice(defaultDiscount.min) | currency: webviewSettings.currency : 'symbol-narrow' : webviewSettings.currencyFormat}}
+        </div>
+      </div>
+      <div *ngFor="let discount of this.cartProduct?.product?.discounts" class="discounts-info">
+        <div [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: product})">
+          {{discount.min}}{{discount.max === 0 ? ' ' + this.languageTexts.genericOrMore + ' ' : ''}}{{discount.max !== discount.min && discount.max > 0 ? ' - ' + discount.max : ''}}
+        </div>
+        <div class="discount-amount" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: product})">
+          {{discount.amount > 0 ? (discount.amount | number: '1.0-2') + this.languageTexts.discountPercentText : '' }}
+        </div>
+        <div class="discount-price" [ngStyle]="this.customStyle.getCustomStyle({type: 'product', attributes: ['fontColor'], item: product})">
+          {{this.cartProduct.product.getActualPrice(discount.min) | currency: webviewSettings.currency : 'symbol-narrow' : webviewSettings.currencyFormat}}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

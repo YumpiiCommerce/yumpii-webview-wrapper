@@ -1,0 +1,33 @@
+<div class="main-wrapper">
+  <generic-views-modal *ngIf="this.modalVisible" [message]="modalMessage" [actionText]="modalActionText" [cancelText]="modalCancelText" (onActionRequested)="modalAction()" (onCancelRequested)="modalCancel()" ></generic-views-modal>
+  <generic-views-header [showCartButton]="!singleProductMode" [showHumanButton]="!!this.webviewConfig.showHumanHelp"></generic-views-header>
+  <div class="product-detail-container">
+    <generic-views-product [product]="this.product" #productView="productView" ></generic-views-product>
+  </div>
+  <div
+    class="product-comment-wrapper"
+    *ngIf="(product || productView?.cartProduct) && showProductComment()"
+    data-testid="product-comment-wrapper"
+  >
+    <yumpii-comment
+      [comment]="productView.cartProduct.productComment"
+      [commentTitle]="languageTexts.productCommentTitle"
+      (onChange)="setComment($event)"
+    ></yumpii-comment>
+  </div>
+  <generic-views-footer class="footer-component"
+    [delimited]="!showProductComment()"
+    [buttonText]="this.languageTexts.itemDetailsButtonText"
+    [smallText]="!singleProductMode ? ((this.webviewConfig.showPrices !== false ? this.languageTexts.genericSubtotal + ' ' : '') + productView.currentQuantity + ' ' + (productView.currentQuantity === 1 ? this.languageTexts.counterLabelSingle : this.languageTexts.counterLabelPlural)) : ''"
+    [bigText]="this.webviewConfig.showPrices !== false
+      ? showRewardsPrice() && rewardsInfo.isRedeemable && rewardsInfo.exchangeRate !== 0
+        ? getRewardsLabel()
+        : (productView.currentSubtotal | currency: webviewConfig.currency : 'symbol-narrow' : webviewConfig.currencyFormat) || ''
+      : ''
+    "
+    [buttonColor]="this.webviewConfig.theme.footerButtonColor"
+    [buttonDisabled]="!productView.isFullfilled"
+    [showInfoText]="!!productView?.showSubtotal && !singleProductMode"
+    (buttonPressed)="onSubmit()">
+  </generic-views-footer>
+</div>

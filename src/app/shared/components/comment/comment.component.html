@@ -1,0 +1,38 @@
+<div class="comment-wrapper" data-testid="comment-wrapper">
+  <div
+    class="comment-header"
+    [ngClass]="{ 'border-bottom': !showComment }"
+    data-testid="comment-header"
+  >
+    <div class="title-comment-wrapper">
+      <i class="icon-comment ph ph-{{ commentIcon || 'chat-text' }}"></i>
+      <span class="title-comment">
+        {{ commentTitle }}
+        <span class="optional-text">(opcional)</span></span
+      >
+    </div>
+    <button
+      class="btn-toggle-comment"
+      (click)="toggleComment()"
+      data-testid="btn-toggle-comment"
+    >
+      <i
+        class="arrow-down ph ph-caret-down"
+        [ngClass]="{ 'arrow-up': showComment }"
+      ></i>
+    </button>
+  </div>
+  @if(showComment) {
+  <div class="comment-body" data-testid="comment-body">
+    <mat-form-field class="mat-form-field" appearance="outline">
+      <textarea
+        class="textarea-comment"
+        name="comment"
+        [placeholder]="languageTexts.commentPlaceholder"
+        [formControl]="commentControl"
+        matInput
+      ></textarea>
+    </mat-form-field>
+  </div>
+  }
+</div>

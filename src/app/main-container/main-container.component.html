@@ -1,0 +1,7 @@
+<div id="webview-container">
+  <div id="fake-mobile">
+    <yumpii-ad-modal *ngIf="isConfigLoaded && this.displayAds && adModalInfo.enabled && !this.adClosed" [adModalInfo]="adModalInfo" (closed)="closeAd()"></yumpii-ad-modal>
+    <categorized-view-main *ngIf="isConfigLoaded && (viewMode === 'categorized' || viewMode === 'split')" style="height: 100%;"></categorized-view-main>
+    <generic-views-front *ngIf="isConfigLoaded && viewMode === 'default'" style="height: 100%;"></generic-views-front>
+  </div>
+</div>

@@ -1,0 +1,15 @@
+.media-wrapper {
+  height: 100%;
+}
+
+.media-image  {
+  max-width: 100%;
+  max-height: var(--product-image-max-height);
+  object-fit: contain;
+  display: block;
+  transition: max-height 0.5s;
+
+  &.reduced {
+    max-height: var(--product-image-min-height);
+  }
+}

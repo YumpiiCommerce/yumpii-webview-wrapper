@@ -1,0 +1,7 @@
+<owl-carousel-o #mediaCarousel [options]="this.carouselOptions" class="gallery-carousel" (changed)="mediaChanged($event)" >
+  <ng-container *ngFor="let mediaURL of this.mediaURLs; index as index">
+    <ng-template carouselSlide [id]="'slide' + index">
+      <img class="media-image" [src]="mediaURL" [ngClass]="{ 'reduced': this.reduced }">
+    </ng-template>
+  </ng-container>
+</owl-carousel-o>

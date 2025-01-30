@@ -1,0 +1,10 @@
+<div class="content-wrapper">
+  <p class="title">¡Oops!</p>
+  <p class="message">Por el momento no podemos<br />atender tu consulta, inténtalo más tarde.</p>
+  <div class="icon">
+    <i class="fas fa-ban"></i>
+  </div>
+  <button class="action-button" [ngStyle]="{'background-color': this.buttonColor }" type="button" (click)="returnToChannel()">
+    Volver a {{this.channelName}}
+  </button>
+</div>

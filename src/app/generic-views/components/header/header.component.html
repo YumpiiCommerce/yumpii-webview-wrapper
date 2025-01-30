@@ -1,0 +1,24 @@
+<div class="header-wrapper">
+  <div class="left-content" [ngClass]="{ 'one-column': searchBoxExpanded }">
+    <button *ngIf="showBackButton" type="button" class="back-button" (click)="goBack()"><i class="fas fa-chevron-left"></i></button>
+  </div>
+  <div class="header-logo" [ngClass]="{
+    'one-column': searchBoxExpanded,
+    'right': !showCartButton}">
+    <img *ngIf="showLogo" [src]="logoUrl" alt="Logo" [routerLink]="['/', currentSlug]" />
+  </div>
+  <div class="buttons-container" [ngClass]="{ 'one-column': searchBoxExpanded }">
+    <generic-views-search-box class="search-box" *ngIf="showSearchBox" (expansionChanged)="listenSearchBoxExpansion($event)" [alwaysExpanded]="false" ></generic-views-search-box>
+    <button *ngIf="showHumanButton" type="button" class="human-button" [routerLink]="['/' + currentSlug + '/human']">
+      <i class="ph ph-{{ helpIcon || 'chats-circle' }}"></i>
+    </button>
+    <button *ngIf="showCartButton" type="button" class="cart-button" [routerLink]="['/' + currentSlug + '/cart']">
+      <i *ngIf="!this.loadedConfig.webview.theme.cartIcon || !this.loadedConfig.webview.theme.cartIcon.startsWith('http'); else imageCartIcon"
+        class="fas fa-{{ this.loadedConfig.webview.theme.cartIcon || 'shopping-cart' }}"></i>
+      <ng-template #imageCartIcon>
+        <img class="cart-icon" [src]="this.loadedConfig.webview.theme.cartIcon" >
+      </ng-template>
+      <span *ngIf="productsCount > 0">{{productsCount}}</span>
+    </button>
+  </div>
+</div>

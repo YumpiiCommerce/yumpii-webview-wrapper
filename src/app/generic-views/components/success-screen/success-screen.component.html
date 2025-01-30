@@ -1,0 +1,10 @@
+<div class="content-wrapper" [ngStyle]="{'background-color': backgroundColor }">
+  <div class="logo">
+    <i class="fas fa-check-circle" [ngStyle]="{'color': buttonBackgroundColor }"></i>
+  </div>
+  <p class="subtitle" [ngStyle]="{'color': titleColor }" *ngIf="!singleProductMode">{{subtitle}}</p>
+  <p class="message" [ngStyle]="{'color': subtitleColor }">{{message}}</p>
+  <button class="button-return" [ngStyle]="{'background-color': buttonBackgroundColor, 'color': buttonFontColor }" type="button" (click)="returnToChannel()">
+    {{buttonLabel}}
+  </button>
+</div>

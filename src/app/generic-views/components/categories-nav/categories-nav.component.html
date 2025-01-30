@@ -1,0 +1,52 @@
+<div class="nav-main" [ngStyle]="this.getNavbarBackgroundColor()">
+  <div class="arrow-link">
+    <a (pointerdown)="scrollLeft()" (onselect)="preventContextMenu($event)" (contextmenu)="preventContextMenu($event)" (pointerup)="stopScroll()" (pointerleave)="stopScroll()" >
+      <i *ngIf="this.navLeftAvailable"
+        class="fas fa-chevron-left" [ngStyle]="this.getNavbarFontColor()">
+      </i>
+    </a>
+  </div>
+  <div class="nav-container" (scroll)="onNavScrolled($event)">
+    <ul class="nav-tabs nav">
+      <li class="nav-item" *ngIf="this.showAllButton">
+        <a
+          class="nav-link"
+          [ngClass]="{ 'active': this.selectedCategoryIndex === 0 }"
+          ScrollIntoView
+          (click)="selectCategory({ id: '-1', children: [] });"
+          [moveScroll]="!this.selectedCategory"
+          [ngStyle]="this.getNavbarFontColor()"
+        >
+          Todos
+        </a>
+      </li>
+      <li class="nav-item" *ngFor="let category of siblings; index as index;">
+        <a class="nav-link" ScrollIntoView (click)="selectCategory(category);"
+          [ngClass]="{ 'active': this.showAllButton ? this.selectedCategoryIndex === (index + 1) : this.selectedCategoryIndex === index }"
+          [moveScroll]="!!this.selectedCategory && this.selectedCategory.id === category.id"
+          [ngStyle]="{
+            'border-color': this.webviewConfig.theme.navBarUnderlineColor
+              ? this.showAllButton
+                ? this.selectedCategoryIndex === (index + 1)
+                  ? this.webviewConfig.theme.navBarUnderlineColor
+                  : this.webviewConfig.theme.navBarBackgroundColor
+                : this.selectedCategoryIndex === index
+                  ? this.webviewConfig.theme.navBarUnderlineColor
+                  : this.webviewConfig.theme.navBarBackgroundColor
+              : null,
+            'color': this.webviewConfig.theme.navBarFontColor
+              ? this.webviewConfig.theme.navBarFontColor
+              : null
+          }"
+        >{{category.name}}</a>
+      </li>
+    </ul>
+  </div>
+  <div class="arrow-link">
+    <a (pointerdown)="scrollRight()" (contextmenu)="preventContextMenu($event)" (pointerup)="stopScroll()" (pointerleave)="stopScroll()">
+      <i *ngIf="this.navRightAvailable"
+        class="fas fa-chevron-right" [ngStyle]="this.getNavbarFontColor()">
+      </i>
+    </a>
+  </div>
+</div>

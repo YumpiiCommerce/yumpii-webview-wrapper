@@ -1,0 +1,114 @@
+<div class="products-list-container" [ngStyle]="this.getBodyBackgroundColor()" [ngClass]="{ 'h-full': singleProductMode, 'wide': this.isWide, 'not-wide': !this.isWide }">
+  <ng-container *ngFor="let product of this.products" >
+    <div *ngIf="!product.outOfStock || webviewSettings.showOutOfStock" class="product-container"
+      [ngStyle]="this.getBackgroundColor(product)"
+      [ngClass]="{ 'product-container-incart': this.isInCart(product.id), 'product-container-outcart': !this.isInCart(product.id) }"
+    >
+      <div *ngIf="!product.outOfStock" class="tags">
+        <div *ngIf="product.discounts && product.discounts.length > 0" class="tag" style="background-image: url(assets/images/tag_green.svg)">
+          {{this.languageTexts.promoTagText}}
+        </div>
+        <div *ngIf="this.hasBonuses(product.id)" class="tag" style="background-image: url(assets/images/tag_yellow.svg)">
+          {{this.languageTexts.bonusTagText}}
+        </div>
+      </div>
+      <img class="out-of-stock-overlay" *ngIf="product.outOfStock && webviewSettings.showOutOfStock" [src]="webviewSettings.outOfStockOverlay" />
+      <div class="product-card" [id]="product.id">
+        <div class="product-image-container" >
+          <img class="product-image" loading="lazy" [src]="product.imageURL || (product.imageURLs ? product.imageURLs[0] : '') || (product.mediaURLs ? product.mediaURLs[0] : '') || defaultImage" [ngClass]="{ 'out-of-stock': product.outOfStock }" [routerLink]="['/' + currentSlug + '/product/' + product.id]" />
+          <div class="badges">
+            <button *ngIf="this.isInCart(product.id)" type="button" class="cart-icon">
+              <i class="fas fa-shopping-cart"></i>
+            </button>
+            <button *ngIf="this.webviewSettings.showFavorites" type="button" class="favorite-button" [ngClass]="{ 'selected': this.isFavorite(product) }" (click)="this.toggleFavorite(product)">
+              <i class="fa-heart" [ngClass]="{ 'fas': this.isFavorite(product), 'fa-regular': !this.isFavorite(product) }"></i>
+            </button>
+          </div>
+        </div>
+        <div class="product-content">
+
+          <div class="product-info">
+            <div class="product-id" *ngIf="webviewSettings.displayId || webviewSettings.customAttribute" [ngStyle]="this.getFontColor(product)">
+              {{ webviewSettings.idPrefix }}{{ webviewSettings.displayId ? product.id : product[webviewSettings.customAttribute] }}
+            </div>
+
+            <div class="product-name" [routerLink]="['/' + currentSlug + '/product/' + product.id]"
+                [ngStyle]="{
+                  'color': webviewSettings.theme.productNameColor
+                    ? webviewSettings.theme.productNameColor
+                    : '#303030'
+                }"
+              >
+                <p [ngStyle]="this.getFontColor(product)">{{ product.title }}</p>
+              </div>
+
+            <div class="product-description-wrapper" [innerHTML]="(product?.shortDescription || product?.description || '') | safe:'html'" [ngStyle]="this.getFontColor(product)"></div>
+
+            <div *ngIf="showRewardsLabel(product)" class="rewards-label">
+              {{product.getRewardsLabel(this.rewardsInfo)}}
+            </div>
+          </div>
+
+          <div class="product-actions-wrapper" [ngClass]="{ 'has-counter': !(webviewSettings.customizableProducts === true || (webviewSettings.customizableProducts !== false && product.customizations.length)) }">
+            <div *ngIf="webviewSettings.showPrices !== false
+                    && product?.showSubtotal
+                    && product.getActualPrice(this.getCartQuantity(product)) > 0"
+                class="product-price"[ngStyle]="this.getFontColor(product)">
+              <div *ngIf="!product.showRewardsPrice(this.rewardsInfo)" class="cash-price">
+                <span *ngIf="product.regularPrice > product.getActualPrice(this.getCartQuantity(product))" class="regular-price">{{product.regularPrice | currency: webviewSettings.currency : 'symbol-narrow' : webviewSettings.currencyFormat}}</span>
+                {{product.getActualPrice(this.getCartQuantity(product)) | currency: webviewSettings.currency : 'symbol-narrow' : webviewSettings.currencyFormat}}
+              </div>
+              <div *ngIf="product.showRewardsPrice(this.rewardsInfo) && this.rewardsInfo?.enabled" class="cash-price">
+                {{product.getRewardsLabel(this.rewardsInfo)}}
+              </div>
+
+            </div>
+            @if (webviewSettings.customizableProducts === true || (webviewSettings.customizableProducts !== false && product.customizations.length)) {
+              <div class="action-item">
+                <button
+                  type="button"
+                  class="product-add-to-cart-button w-100"
+                  [ngStyle]="this.customStyle.getCustomStyle({type: 'general', attributes: ['productListButtonFontColor'] })"
+                  [routerLink]="['/' + currentSlug + '/product/' + product.id]"
+                  [ngStyle]="{'background': this.themeSettings.productButtonsColor || this.themeSettings.customerColor}"
+                >
+                  {{ this.languageTexts.itemCardButtonText }}
+                </button>
+              </div>
+            } @else {
+              <div class="product-counter">
+                <button
+                  [disabled]="this.getCartQuantity(product) === 0"
+                  type="button"
+                  class="minus-button"
+                  (click)="addToCart(product, this.getCartQuantity(product) - 1)">
+                  <i class="fas fa-minus"></i>
+                </button>
+                <input
+                  [disabled]="product.outOfStock"
+                  type="number"
+                  step="1"
+                  class="current-count"
+                  (change)="addToCart(product, $event.target)"
+                  (keypress)="validateNumbers($event)"
+                  [value]="this.getCartQuantity(product)"
+                />
+                <button
+                  [disabled]="
+                    product.outOfStock ||
+                    (product.max > 0 &&
+                      this.getCartQuantity(product) >= product.max)
+                  "
+                  type="button"
+                  class="plus-button"
+                  (click)="addToCart(product, this.getCartQuantity(product) + 1)">
+                  <i class="fas fa-plus"></i>
+                </button>
+              </div>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

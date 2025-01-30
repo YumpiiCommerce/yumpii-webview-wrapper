@@ -1,0 +1,95 @@
+#main-wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  @media (min-width: 425px) {
+    position: relative;
+    max-width: 425px;
+  }
+
+  .footer-component {
+    top: calc(100%);
+    position: -webkit-sticky;
+    position: sticky;
+    z-index: 10;
+  }
+}
+
+.products-container {
+  position: absolute;
+  width: 100%;
+  overflow: auto;
+  flex: 1 1 auto;
+  top: var(--categorized-header-size);
+  height: calc(100% - var(--categorized-header-size) - var(--main-footer-size));
+
+  &.has-categories-nav {
+    top: calc(var(--categorized-header-size) + var(--categorized-navbar-size));
+    height: calc(100% - var(--categorized-header-size) - var(--categorized-navbar-size) - var(--main-footer-size));
+  }
+
+  &.only-featured-carousel-top {
+    top: calc(var(--categorized-header-size) + var(--categorized-featured-carousel-size));
+    height: calc(100% - var(--categorized-header-size) - var(--main-footer-size) - var(--categorized-featured-carousel-size));
+  }
+
+  &.has-featured-carousel-top {
+    top: calc(var(--categorized-header-size) + var(--categorized-navbar-size) + var(--categorized-featured-carousel-size));
+    height: calc(100% - var(--categorized-header-size) - var(--categorized-navbar-size) - var(--main-footer-size) - var(--categorized-featured-carousel-size));
+  }
+
+  &.only-featured-carousel-bottom {
+    top: calc(var(--categorized-header-size));
+    height: calc(100% - var(--categorized-header-size) - var(--main-footer-size) - var(--categorized-featured-carousel-size));
+  }
+
+  &.has-featured-carousel-bottom {
+    top: calc(var(--categorized-header-size) + var(--categorized-navbar-size));
+    height: calc(100% - var(--categorized-header-size) - var(--categorized-navbar-size) - var(--main-footer-size) - var(--categorized-featured-carousel-size));
+  }
+
+  &.h-full {
+    height: auto;
+    bottom: 0px;
+  }
+}
+
+.search-container {
+  top: calc(var(--categorized-header-size));
+  height: calc(100% - var(--categorized-header-size) - var(--main-footer-size));
+}
+
+.nav-tabs {
+  min-height: 50px;
+  border: 0;
+}
+
+.nav-link {
+  font-weight: 300;
+  color: #AAA;
+  font-size: 1rem;
+  line-height: 1.75;
+  border: 0;
+}
+
+.nav-link.active {
+  color: #000;
+  font-weight: 500;
+  border-bottom: solid 2px var(--customer-color);
+}
+
+.body-component {
+  width: 100%;
+  height: 100%;
+}
+
+.featured-carousel-wrapper {
+  padding: 1px 0px 8px;
+  width: 100%;
+}
+
+.featured-carousel-bottom {
+  display: flex;
+  flex-direction: column-reverse;
+}

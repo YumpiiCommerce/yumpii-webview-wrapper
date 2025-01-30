@@ -1,0 +1,10 @@
+<div class="content-wrapper">
+  <div class="logo">
+    <i class="fas fa-hourglass-end"></i>
+  </div>
+  <p class="subtitle">¡Tu sesión ha expirado!</p>
+  <p class="message">Regresa a {{this.channelName}} para generar un nuevo enlace.</p>
+  <button class="button-return" [ngStyle]="{'background-color': this.buttonColor }" type="button" (click)="returnToChannel()">
+    Volver a {{this.channelName}}
+  </button>
+</div>

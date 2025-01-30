@@ -1,0 +1,4 @@
+<div id="main-wrapper" [ngStyle]="this.getBodyBackgroundColor()">
+  <categorized-view-front *ngIf="isRootSegment"></categorized-view-front>
+  <router-outlet *ngIf="!isRootSegment"></router-outlet>
+</div>

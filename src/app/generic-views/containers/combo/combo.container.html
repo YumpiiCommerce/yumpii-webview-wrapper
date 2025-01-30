@@ -1,0 +1,12 @@
+<div class="main-wrapper">
+  <generic-views-header [showHumanButton]="this.webviewConfig?.showHumanHelp"></generic-views-header>
+  <div class="combo-detail-container">
+    <generic-views-combo [comboId]="this.comboId" #comboView ></generic-views-combo>
+  </div>
+  <generic-views-footer class="footer-component"
+    [buttonText]="this.isUpdate ? this.languageTexts.updateCartButtonText : this.languageTexts.addToCartButtonText"
+    [smallText]="(this.webviewConfig.showPrices !== false ? this.languageTexts.genericSubtotal + ' ' : '') + comboView.currentQuantity + ' ' + (comboView.currentQuantity === 1 ? this.languageTexts.counterLabelSingle : this.languageTexts.counterLabelPlural)"
+    [bigText]="this.webviewConfig.showPrices !== false ? (comboView.currentSubtotal | currency: webviewConfig.currency : 'symbol-narrow' : webviewConfig.currencyFormat) || '': ''"
+    [buttonColor]="this.webviewConfig.theme.footerButtonColor || this.webviewConfig.theme.customerColor"
+    (buttonPressed)="updateCart(comboView.products)"></generic-views-footer>
+</div>

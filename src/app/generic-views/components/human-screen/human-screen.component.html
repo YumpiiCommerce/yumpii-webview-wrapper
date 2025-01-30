@@ -1,0 +1,16 @@
+<generic-views-header [showCartButton]="false" [showLogo]="true"></generic-views-header>
+<div class="content-wrapper">
+  <div class="icon">
+    <img [src]="this.loadedConfig.webview.humanHelpIcon">
+  </div>
+  <p class="title">{{this.languageTexts.humanHelpTitle}}</p>
+  <p class="message" [innerHTML]="this.languageTexts.humanHelpMessage | safe:'html'"></p>
+  <div class="actions">
+    <button class="back-button" [ngStyle]="{ 'color': this.loadedConfig.webview.theme.customerColor }" type="button" [routerLink]="['/' + currentSlug]">
+      {{this.languageTexts.humanHelpBackText}}
+    </button>
+    <button class="action-button" [ngStyle]="{'background-color': this.loadedConfig.webview.theme.customerColor }" type="button" (click)="executeAction()">
+      {{this.languageTexts.humanHelpActionText}}
+    </button>
+  </div>
+</div>

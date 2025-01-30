@@ -1,0 +1,11 @@
+<div class="search-input-wrapper" [ngClass]="{ 'input-hidden': !this.expanded && !this.alwaysExpanded }">
+  <i class="fas fa-search search" (click)="this.setExpansion(true)" [ngStyle]="this.getSearchFontColor()"></i>
+  <input *ngIf="this.alwaysExpanded || this.expanded" id="searchInput"
+    [placeholder]="this.languageTexts.searchBoxPlaceholder"
+    [(ngModel)]="searchTerm"
+    (click)="expanded = true"
+    (keyup)="launchSearch()"
+    [ngStyle]="this.getSearchBackgroundColor()"
+  />
+  <i *ngIf="this.alwaysExpanded || this.expanded" class="fas fa-times close" (click)="clearSearch(); this.setExpansion(false);" [ngStyle]="this.getSearchFontColor()"></i>
+</div>
