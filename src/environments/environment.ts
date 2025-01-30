@@ -6,13 +6,6 @@ export const environment = {
   production: false,
 };
 
-/* export const environment = {
-  configURL: 'https://api-public.online-store.tech/{{slug}}/config',
-  configAPIKey: 'Qtl4GYqAhI3skHwlbaDEP5T3vzaxS0r18eAP152o',
-  yaluMetaPixel: '1640512299629060',
-  production: true,
-};
-
 /*
  * For easier debugging in development mode, you can import the following file
  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.

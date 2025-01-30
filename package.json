@@ -21,7 +21,7 @@
     "@angular/platform-browser-dynamic": "^19.1.0",
     "@angular/router": "^19.1.0",
     "@migopayments/sdk": "^2.3.0",
-    "@yumpii/ngx-webview-lib": "^1.0.2",
+    "@yumpii/ngx-webview-lib": "^1.0.3",
     "angular-google-tag-manager": "^1.11.0",
     "handlebars": "^4.7.8",
     "localstorage-slim": "^2.7.1",
